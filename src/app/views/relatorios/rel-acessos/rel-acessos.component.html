@@ -1,0 +1,196 @@
+<div class="wrapper">
+    <app-navbar></app-navbar>
+    <app-sidebar></app-sidebar>
+  
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Relatório de acessos</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">            
+              <li class="breadcrumb-item"><a [routerLink]="['/inicio']">Início</a></li>
+                  <li class="breadcrumb-item active">Relatório de acessos</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+  
+    <!-- Main content -->
+    <div class="content" >
+      <div class="container-fluid">
+        <div class="row">
+          
+          <!-- LISTA DE funções -->
+          <div class="col-12">
+            <div class="card card-orange card-outline" *ngIf="!show">
+                <div class="content">
+                    <div class="container-fluid" style="padding: 15px;">
+
+                        <form [formGroup]="relform">
+                            <div class="row">
+                              <div class="col-2">
+                                <div class="form-group">
+                                    <label for="orgao_id">Orgão<span class="text-danger">*</span></label>
+                                    <select class="form-control form-control-border" (change)="getPostos()" formControlName="orgao_id" required id="orgao_id">
+                                        <option></option>
+                                        <option *ngFor="let orgao of orgaos$" [value]="orgao.id">{{orgao.nome}}</option>
+                                        
+                                    </select>
+                                </div>
+                              </div>
+                              <div class="col-2">
+                                <div class="form-group">
+                                    <label for="posto_id">Posto</label>
+                                    <select class="form-control form-control-border" formControlName="posto_id" id="posto_id">
+                                        <option></option>
+                                        <option *ngFor="let posto of postos$" [value]="posto.id">{{posto.nome}}</option>
+                                        
+                                    </select>
+                                </div>
+                              </div>
+                              <div class="col-2">
+                                <div class="form-group">
+                                    <label for="data_ini">Data Início<span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control form-control-border" required formControlName="data_ini" id="data_ini"/>
+                                </div>
+                              </div>
+                              <div class="col-2">
+                                <div class="form-group">
+                                    <label for="data_fim">Data Fim<span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control form-control-border" required formControlName="data_fim" id="data_fim"/>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- FIM PRIMEIRA DIV -->
+                            <button class="btn btn-primary btn-flat btn-block" [disabled]="!relform.valid" (click)="getAcessos()" style="margin-bottom: 20px;">Selecionar</button>
+                          </form>
+
+                    </div>
+                </div>    
+                
+            </div>
+            <div class="card card-orange card-outline" *ngIf="show">
+              
+             <!-- -----------fim loading----------- -->
+              <!-- ---------------------- -->
+              <div class="card-header ">
+                <div class="row">
+                  <div class="col-12">
+                    <a class="btn btn-link float-sm-right noprint" (click)="show = 0;">Voltar</a>
+                  </div>
+                    <div class="col-1">
+                        
+                        <img src="{{ce}}" alt="CM" class="brand-image  " style="height: 100px; max-height: 100px;" >
+                    </div>
+                    <div class="col-10" style="text-align: center; vertical-align: middle;">
+                        <h1>Governo do Estado do Ceará</h1>
+                        <h2>Casa Militar</h2>
+                        <h3>Relatório de acessos</h3>
+                    </div>
+                    <div class="col-1" style="text-align: right;">
+                        <img src="{{cm}}" alt="CM" class="brand-image" style="height: 100px; max-height: 100px;" >
+                    </div>
+                </div>
+               
+              </div>
+  
+              <!-- ---------------------- -->
+  
+              <div class="card-body table-responsive p-0">
+                
+        
+                <div class="content">
+                    <div class="container-fluid">
+                        <h4>Informações:</h4>
+                        <div class="row">
+                            
+                            <div class="col-12">
+                                <div class="row">                                  
+                                    
+                                    <div class="col-2">
+                                      <b>Data Início:</b>
+                                      {{relform.value.data_ini | date:'dd/MM/yyyy'}}
+                                  </div>
+                                  <div class="col-2">
+                                      <b>Data Fim:</b>
+                                      {{relform.value.data_fim | date:'dd/MM/yyyy'}}
+                                  </div>    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <table  class="table table-hover text-nowrap">
+                    <thead>
+                      <tr>
+                        <th>POSTO/GRAD</th> 
+                        <th>NOME</th> 
+                        <th>CPF</th> 
+                        <th>POSTO/ORGÃO</th> 
+                        <th>DATA / HORA</th>
+                        <th>RESPONSÁVEL</th>
+                      </tr>
+                    </thead>                    
+                    <tbody >
+                      <tr *ngFor="let data of data$">
+                          <td>{{ data.user.posto_grad.nome }}</td> 
+                          <td>{{ data.user.nome }}</td> 
+                          <td>{{ data.user.cpf }}</td>  
+                          <td>{{ data.posto.nome}} / {{ data.orgao.nome}}</td>    
+                          <td>{{ data.data | date:'dd/MM/yyyy'}} {{ data.hora }}</td>  
+                          <td>{{data.responsavel.nome}}</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                        
+                    </tfoot>
+                  </table>
+  
+              </div>
+              <!-- ---------------------- -->
+              <div class="card-footer clearfix">
+                <div class="row">
+                    <div class="col-4">
+                        Usuário: {{user.nome}}                        
+                    </div>
+                    <div class="col-4" style="text-align: center; vertical-align: middle;">
+                        
+                    </div>
+                    <div class="col-4" style="text-align: right;">
+                        Data/Hora: {{date.getDate () + " de " + monName [date.getMonth() ]   +  " de "  +     date.getFullYear () +", "+date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()}}
+                    </div>
+                </div>
+              </div>
+              <!-- ---------------------- -->
+            </div>
+  
+           
+  
+          
+  
+          </div>
+          <!-- FIM LISTA DE USUÁRIOS -->
+  
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  
+  
+  <app-controlbar></app-controlbar>
+  <app-footer></app-footer>
+  
+  </div>
+  <!-- ./wrapper -->

@@ -1,0 +1,314 @@
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-dark-orange elevation-4">
+    <!-- Brand Logo -->
+    <a [routerLink]="['/inicio']" class="brand-link">
+      <img src="{{logo}}" alt="CM" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">Casa Militar</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview"  role="menu" data-accordion="true">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item">
+            <a [routerLink]="['/inicio']" [routerLinkActive]="['active']" class="nav-link">
+              <i class="nav-icon fas fa-home"></i>
+              <p>
+                Início
+                <!--<span class="right badge badge-danger">New</span>-->
+              </p>
+            </a>
+          </li> 
+          <li class="nav-item">
+            <a [routerLink]="['/acesso']" [routerLinkActive]="['active']" *ngIf="user.perfil.acesso" class="nav-link ">
+              <i class="nav-icon fas fa-address-card"></i>
+              <p>
+                Acesso
+                <!--<span class="right badge badge-danger">New</span>-->
+              </p>
+            </a>
+          </li>   
+          <li class="nav-item">
+            <a [routerLink]="['/c1']" [routerLinkActive]="['active']" *ngIf="user.perfil.c1" class="nav-link ">
+              <i class="nav-icon fas fa-address-book"></i>
+              <p>
+                C1
+                <!--<span class="right badge badge-danger">New</span>-->
+              </p>
+            </a>
+          </li> 
+          <li class="nav-item">
+            <a [routerLink]="['/eventos']" [routerLinkActive]="['active']" *ngIf="user.perfil.eventos" class="nav-link ">
+              <i class="nav-icon fas fa-calendar-alt"></i>
+              <p>
+                Eventos
+                <!--<span class="right badge badge-danger">New</span>-->
+              </p>
+            </a>
+          </li> 
+          <li class="nav-item">
+            <a [routerLink]="['/usuarios']" [routerLinkActive]="['active']" *ngIf="user.perfil.users" class="nav-link ">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Usuários
+                <!--<span class="right badge badge-danger">New</span>-->
+              </p>
+            </a>
+          </li>  
+          <li class="nav-item">
+            <a [routerLink]="['/viaturas']" [routerLinkActive]="['active']" *ngIf="user.perfil.viaturas" class="nav-link ">
+              <i class="nav-icon fas fa-car"></i>
+              <p>
+                Viaturas
+                <!--<span class="right badge badge-danger">New</span>-->
+              </p>
+            </a>
+          </li>  
+         
+          <!--
+          <li class="nav-item">
+            <a [routerLink]="['/viagens']" [routerLinkActive]="['active']"  class="nav-link ">
+              <i class="nav-icon fas fa-route"></i>
+              <p>
+                Viagens
+               <span class="right badge badge-danger">New</span>
+              </p>
+            </a>
+          </li>  --> 
+
+          <li class="nav-item"  *ngIf="user.perfil.relatorios" (mouseenter)="menu1 = true;"  (mouseleave)="menu1 = false;" [ngClass]="{'menu-is-opening menu-open': menu1 == true}">
+            <a  class="nav-link clicktree" >
+              <i class="nav-icon fas fa-newspaper"></i>
+              <p>
+                Relatórios
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+
+              <li class="nav-item">
+                <a [routerLink]="['/relatorios/acessos']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Acessos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/relatorios/eventos']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Eventos</p>
+                </a>
+              </li>  
+              <li class="nav-item">
+                <a [routerLink]="['/relatorios/viaturas']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Viaturas</p>
+                </a>
+              </li>                          
+            </ul>
+          </li>
+
+          <li class="nav-item" *ngIf="user.perfil.administrador" (mouseenter)="menu2 = true;"  (mouseleave)="menu2 = false;"  [ngClass]="{'menu-is-opening menu-open': menu2 == true}">
+            <a  class="nav-link clicktree">
+              <i class="nav-icon fas fa-cog"></i>
+              <p>
+                Administrador
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a [routerLink]="['/cidades']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Cidades</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/cores']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Cores</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/estados']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Estados</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/funcoes']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Funções</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/influencias']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Influências</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/logs']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Logs</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/marcas']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Marcas dos veículos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/modelos']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Modelos dos veículos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/niveis']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Níveis de Acesso</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/orgaos']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Orgãos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/perfis']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Perfis</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/redes-sociais']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Redes Sociais</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/eventos/tipos']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Tipos de eventos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/manifestacoes/tipos']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Tipos de Manifestações</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/veiculos/tipos']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Tipos de veículos</p>
+                </a>
+              </li>
+              
+              <!--
+              <li class="nav-item">
+                <a [routerLink]="['/viaturas']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Viaturas</p>
+                </a>
+              </li> -->
+              
+            </ul>
+          </li>  
+          <li class="nav-item" *ngIf="user.perfil.gestor" (mouseenter)="menu3 = true;"  (mouseleave)="menu3 = false;"  [ngClass]="{'menu-is-opening menu-open': menu3 == true}">
+            <a  class="nav-link clicktree">
+              <i class="nav-icon fas fa-cogs"></i>
+              <p>
+                Gestão
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+
+              <li class="nav-item">
+                <a [routerLink]="['/acessos']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Acessos</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a [routerLink]="['/postos']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Postos</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/setores']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Setores</p>
+                </a>
+              </li>
+              
+              <!--
+              
+              <li class="nav-item">
+                <a [routerLink]="['/viaturas']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Viaturas</p>
+                </a>
+              </li> -->
+              
+            </ul>
+          </li>
+          <li class="nav-item" *ngIf="user.perfil.estrategico" (mouseenter)="menu4 = true;"  (mouseleave)="menu4 = false;"  [ngClass]="{'menu-is-opening menu-open': menu4 == true}">
+            <a  class="nav-link clicktree">
+              <i class="nav-icon fas fa-user-secret"></i>
+              <p>
+                Estratégico
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a [routerLink]="['/consulta']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Consulta</p>
+                </a>
+              </li>    
+              <li class="nav-item">
+                <a [routerLink]="['/sindicatos']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Associações e Sindicatos</p>
+                </a>
+              </li>   
+                  
+              <li class="nav-item">
+                <a [routerLink]="['/manifestacoes']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Eventos e Manifestações</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['/pessoas']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pessoas</p>
+                </a>
+              </li>
+              
+              <li class="nav-item">
+                <a [routerLink]="['/veiculos']" [routerLinkActive]="['active']" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Veículos</p>
+                </a>
+              </li>                          
+            </ul>
+          </li>
+          
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

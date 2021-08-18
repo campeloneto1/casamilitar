@@ -1,0 +1,129 @@
+<div class="wrapper">
+  <app-navbar ></app-navbar>
+  <app-sidebar ></app-sidebar>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Início</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">            
+              <li class="breadcrumb-item active">Início</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          
+          <!-- /.col-4 -->
+          <div class="col-6" *ngIf="user.perfil.gestor">
+            <div class="card card-orange card-outline">
+              <div class="card-header">
+                <h5 class="m-0">Últimos acessos</h5>
+              </div>
+              <div class="card-body table-responsive p-0">
+                <table class="table table-striped table-valign-middle">
+                  <thead>
+                  <tr>
+                    <th>Usuário</th>
+                    <th>Posto / Orgão</th>
+                    <th>Data</th>
+                    <th>Hora</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let ultace of ultimosacessos$ ">
+                      <td>{{ultace.user.nome}}</td>
+                      <td>{{ultace.posto.nome}} / {{ultace.posto.orgao.nome}}</td>
+                      <td>{{ultace.data | date:'dd/MM/yyyy'}}</td>
+                      <td>{{ultace.hora}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+              </div>
+              <div class="card-footer">
+                <a [routerLink]="['/acessos']" class="btn btn-primary btn-flat btn-block">Ver mais</a>
+              </div>
+            </div>
+          </div>
+          <!-- /.col-4 -->
+
+          <!-- /.col-4 -->
+          <div class="col-6" *ngIf="user.perfil.eventos">
+            <div class="card card-orange card-outline">
+              <div class="card-header">
+                <h5 class="m-0">Próximos eventos</h5>
+              </div>
+              <div class="card-body table-responsive p-0">
+                <table class="table table-striped table-valign-middle">
+                  <thead>
+                  <tr>
+                    <th>Tipo Evento</th>
+                    <th>Nome</th>
+                    <th>Setor / Orgão</th>
+                    <th>Data</th>
+                    <th>Hora</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let proxevent of proximoseventos$ ">
+                      <td>{{proxevent.eventotipo.nome}}</td>
+                      <td>{{proxevent.nome}}</td>
+                      <td>{{proxevent.setor.nome}} / {{proxevent.orgao.nome}}</td>
+                      <td>{{proxevent.data | date:'dd/MM/yyyy'}}</td>
+                      <td>{{proxevent.hora}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+              </div>
+              <div class="card-footer">
+                <a [routerLink]="['/eventos']" class="btn btn-primary btn-flat btn-block">Ver mais</a>
+              </div>
+            </div>
+          </div>
+          <!-- /.col-4 -->
+
+          <!-- /.col-4 
+          <div class="col-4">
+            <div class="card card-orange card-outline">
+              <div class="card-header">
+                <h5 class="m-0">Featured</h5>
+              </div>
+              <div class="card-body">
+                <h6 class="card-title">Special title treatment</h6>
+
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+          </div>-->
+          <!-- /.col-4 -->
+
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  
+  
+<app-controlbar ></app-controlbar>
+<app-footer ></app-footer>
+  
+</div>
+<!-- ./wrapper -->

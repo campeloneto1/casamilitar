@@ -1,0 +1,181 @@
+<div class="wrapper">
+    <app-navbar></app-navbar>
+    <app-sidebar></app-sidebar>
+
+    <div class="content-wrapper" style="min-height: 1416px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1>Consulta</h1>
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a [routerLink]="['/inicio']">Início</a></li>
+                  <li class="breadcrumb-item active">Consulta</li>
+                </ol>
+              </div>
+            </div>
+          </div><!-- /.container-fluid -->
+        </section>
+    
+        <!-- Main content -->
+        <section class="content">
+          <div class="container-fluid">
+            <div class="row">
+              
+              
+              <div class="col-md-12">
+                  
+                <div class="card card-orange card-outline">
+                  <!--<div class="card-header ">
+                    <b>Consultar informações</b>
+                    
+                  </div>-->
+                  <div class="card-body text-justify">
+                    <form [formGroup]="cadform">
+                        <div class="row">
+                            <div class="col-4"></div>
+                          <div class="col-4">
+                            <div class="form-group">
+                             <!-- <label for="nome">Pesquisar<span class="text-danger">*</span></label>                            -->
+                              <input type="text" (change)="consultar()" class="form-control form-control-border" formControlName="nome" id="nome"  placeholder="Pesquisar..." />
+                            </div>
+                          </div>
+                        </div>
+                        
+                        
+                       
+                    </form>
+                    
+                  </div>
+                  
+                </div>
+                
+                
+
+                <div class="row">
+
+
+                  <div class="col-md-6">
+                    <div class="card card-orange card-outline">
+                      <div class="card-header ">
+                        <b>Pessoas</b>
+                        
+                      </div>
+                      <div class="card-body text-justify">
+                        <ol>
+                            <li *ngFor="let pes of pessoas$ | paginate: { itemsPerPage: itenspage, currentPage: p, id: 'lista1' }" style="margin-bottom: 10px;">
+                                <b>Nome:</b> <a [routerLink]="['/pessoa', pes.id]"> {{pes.nome}}</a><br/>                                 
+                                <b>CPF:</b> {{pes.cpf}}<span *ngIf="pes.data_nascimento">, <b>Data Nascimento:</b> {{pes.data_nascimento | date:'dd/MM/YYYY'}} </span><br/>
+                                <span *ngIf="pes.mae"><b>Mãe:</b> {{pes.mae}} </span> <span *ngIf="pes.pai">,<b> Pai:</b> {{pes.pai}} </span> <br *ngIf="pes.mae || pes.pai" />
+                                <b>Veículos:</b> {{pes.veiculos.length}}, <b>Eventos e Manifestações:</b> {{pes.manifestacoes.length}}, <b>Associações e Sindicatos:</b> {{pes.sindicatos.length}}
+                                <!--<span *ngIf="pes.lider"><b >Lider:</b> Sim</span> <br/>
+                                <span *ngIf="pes.pessoa.observacao"><b >Observações:</b> {{pes.pessoa.observacao}}</span>-->
+                            </li>
+                        </ol>
+                        
+                      </div>
+                      <div class="card-footer text-center">
+                        <pagination-controls (pageChange)="p = $event" id="lista1" previousLabel="Anterior"
+                nextLabel="Próximo"  ></pagination-controls>
+                        
+                      </div>
+                     
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card card-orange card-outline">
+                      <div class="card-header ">
+                        <b>Eventos e Manifestações</b>
+                        
+                      </div>
+                      <div class="card-body text-justify">
+                        <ol>
+                          <li *ngFor="let man of manifestacoes$ | paginate: { itemsPerPage: itenspage, currentPage: q, id: 'lista2' }" style="margin-bottom: 10px;">
+                            <b>Categoria:</b> <span *ngIf="man.tipo_id == 2"> Evento</span><span *ngIf="man.tipo_id == 1"> Manifestação</span>,<span *ngIf="man.manifestacao_tipo"><b>Tipo:</b> {{man.manifestacao_tipo.nome}},</span> <b>Nome:</b> <a [routerLink]="['/manifestacao', man.id]"> {{man.nome}}</a> <br/>
+                            <b>Data/Hora:</b> {{man.data | date:'dd/MM/YYYY'}} {{man.hora}}<br/>
+                            <b>Pessoas:</b> {{man.pessoas.length}}, <b>Veículos:</b> {{man.veiculos.length}}
+                            
+                          </li>
+                        </ol>
+                       
+                      </div>
+                      <div class="card-footer text-center">
+                        <pagination-controls (pageChange)="q = $event" id="lista2" previousLabel="Anterior"
+                        nextLabel="Próximo"  ></pagination-controls>
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-orange card-outline">
+                          <div class="card-header ">
+                            <b>Veículos</b>
+                            
+                          </div>
+                          <div class="card-body text-justify">
+                            <ol>
+                              <li *ngFor="let vei of veiculos$ | paginate: { itemsPerPage: itenspage, currentPage: r, id: 'lista3' }" style="margin-bottom: 10px;">
+                                <b>Tipo:</b> {{vei.veiculo_tipo.nome}}, <b>Marca:</b> {{vei.marca.nome}}, <b>Modelo:</b> {{vei.modelo.nome}}, <b>Cor:</b> {{vei.cor.nome}} <br/>
+                                <b>Placa:</b> <a [routerLink]="['/veiculo', vei.id]"> {{vei.placa}}</a><span *ngIf="vei.renavam">, <b>Renavam:</b> {{vei.renavam}}</span><span *ngIf="vei.chassi">, <b>Chassi:</b> {{vei.chassi}}</span>  <br/>
+                                <b>Pessoas:</b> {{vei.pessoas.length}}, <b>Eventos e Manifestações:</b> {{vei.manifestacoes.length}}, <b>Associações e Sindicatos:</b> {{vei.sindicatos.length}}
+                                <!--<span *ngIf="vei.manifestacao"><br/> <b>Manifestação:</b>  {{vei.manifestacao.nome}} ({{ vei.manifestacao.data | date:'dd/MM/YYYY' }} {{ vei.manifestacao.hora }})</span>-->
+                              </li>
+                            </ol>
+                           
+                          </div>
+                          <div class="card-footer text-center">
+                            <pagination-controls (pageChange)="r = $event" id="lista3" previousLabel="Anterior"
+                            nextLabel="Próximo"  ></pagination-controls>
+                            
+                          </div>
+                         
+                        </div>
+                      </div>
+                  <div class="col-md-6">
+                    <div class="card card-orange card-outline">
+                      <div class="card-header ">
+                        <b>Associações e Sindicatos</b>
+                        
+                      </div>
+                      <div class="card-body text-justify">
+                        <ol>
+                          <li *ngFor="let sind of sindicatos$ | paginate: { itemsPerPage: itenspage, currentPage: s, id: 'lista4' }" style="margin-bottom: 10px;">
+                            <b>Tipo:</b> <span *ngIf="sind.tipo_id == 1"> Associação</span> <span *ngIf="sind.tipo_id == 2"> Sindicato</span>, <b>Nome:</b> <a [routerLink]="['/sindicato', sind.id]"> {{sind.nome}} </a><br/>
+                            <b>Pessoas:</b> {{sind.pessoas.length}},  <b>Veículos:</b> {{sind.veiculos.length}}
+                            
+                          </li>
+                        </ol>
+                        
+                      </div>
+                      <div class="card-footer text-center">
+                        <pagination-controls (pageChange)="s = $event" id="lista4" previousLabel="Anterior"
+                nextLabel="Próximo"  ></pagination-controls>
+                        
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+
+              
+              <!-- /.col -->
+            </div>
+            <!-- /.row -->
+          </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+      </div>
+
+  
+  <app-controlbar></app-controlbar>
+  <app-footer></app-footer>
+  
+</div>
+<!-- ./wrapper -->

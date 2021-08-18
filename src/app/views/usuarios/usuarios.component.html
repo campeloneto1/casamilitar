@@ -1,0 +1,492 @@
+<div class="wrapper">
+  <app-navbar></app-navbar>
+  <app-sidebar></app-sidebar>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Usuários</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">            
+            <li class="breadcrumb-item"><a [routerLink]="['/inicio']">Início</a></li>
+                <li class="breadcrumb-item active">Usuários</li>
+          </ol>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <div class="content">
+    <div class="container-fluid">
+      <div class="row">
+        
+        <!-- LISTA DE USUÁRIOS -->
+        <div class="col-12">
+          <div class="card card-orange card-outline">
+            <!-- --------- loading  ------------- -->
+            <div class="overlay " *ngIf="loading">
+              <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+            </div>
+           <!-- -----------fim loading----------- -->
+            <!-- ---------------------- -->
+            <div class="card-header">
+
+              <div class="row"> 
+                <div class="col-1">
+                  <button type="button" *ngIf="perfil$.users_cad" class="btn btn-block btn-outline-primary btn-flat" data-toggle="modal" data-target="#modalcad"><i class="fas fa-plus"></i></button>
+                </div>
+                <div class="col-7">
+                </div>
+                <div class="col-1">
+                  <select [(ngModel)]="itenspage" class="form-control form-control-border">                                        
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="150">150</option>
+                    <option value="250">250</option>
+                  </select>
+                </div>
+                <div class="col-3">
+                  <input type="text" name="table_search" [(ngModel)]="textfilter" (keyup)="filterdata()" class="form-control form-control-border float-right" placeholder="Pesquisar...">                  
+                </div>
+              </div>
+            </div>
+
+            <!-- ---------------------- -->
+
+            <div class="card-body table-responsive p-0">
+            
+              <table  class="table table-hover text-nowrap">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>NOME</th>
+                    <th>CPF</th>
+                    <th>POSTO/GRADUAÇÃO</th>
+                    <th>USUÁRIO</th>
+                    <th>SETOR / ORGÃO</th>
+                    <th>FUNÇÃO</th>
+                    <th *ngIf="perfil$.gestor">PERFIL</th>
+                    <th *ngIf="perfil$.gestor">NÍVEL DE ACESSO</th>
+                    <th>DIGITAL</th>
+                    <th>FOTO</th>
+                    <th>ACESSO</th>
+                    <th>EDITAR</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="data$?.length == 0">
+                  <tr>
+                    <td colspan="11" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="data$?.length != 0">
+                  <tr *ngFor="let data of data$  | paginate: { itemsPerPage: itenspage, currentPage: p }" class="hovers">
+                    <td>{{ data.id }}</td>
+                    <td>{{ data.nome }}</td>
+                    <td>{{ data.cpf }}</td>
+                    <td>{{ data.posto_grad.nome }}</td>
+                    <td>{{ data.usuario }}</td>
+                    <td>{{ data.setor.nome }} / {{ data.orgao.nome }}</td>
+                    <td>{{ data.funcao.nome }}</td>
+                    <td *ngIf="perfil$.gestor">{{ data.perfil.nome }}</td>
+                    <td *ngIf="perfil$.gestor">{{ data.nivel.nome }}</td>
+                    <td >
+                      <i class="fas fa-fingerprint point" *ngIf="(perfil$.users_dig  && data.orgao_id == user$.orgao_id) || perfil$.administrador" [ngClass]="data.digital ? 'text-success' : 'text-danger'" (click)="digital(data)" data-toggle="modal" data-target="#modaldig"></i>
+                      <i class="fas fa-fingerprint" *ngIf="!perfil$.users_dig " [ngClass]="data.digital ? 'text-success' : 'text-danger'"></i>
+                    </td>
+                    <td >
+                      <i class="fas fa-portrait point" *ngIf="(perfil$.users_foto  && data.orgao_id == user$.orgao_id) || perfil$.administrador" [ngClass]="data.foto ? 'text-success' : 'text-danger'" (click)="foto(data)" data-toggle="modal" data-target="#modalfoto"></i>
+                      <i class="fas fa-portrait" *ngIf="!perfil$.users_foto " [ngClass]="data.foto ? 'text-success' : 'text-danger'"></i>
+                    </td>
+                    <td>                      
+                      <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success" *ngIf="(perfil$.users_ace  && data.orgao_id == user$.orgao_id) || perfil$.administrador">
+                        <input type="checkbox" [checked]="data.acesso == 1" (change)="changeAcesso(data)" class="custom-control-input"  id="{{ data.id }}">
+                        <label class="custom-control-label" for="{{ data.id }}"></label>
+                      </div>
+                      
+                    </td>
+                    <td>  
+                      <span class="editdata">
+                        <i class="right fas fa-edit text-primary point" *ngIf="(perfil$.users_edit  && data.orgao_id == user$.orgao_id) || perfil$.administrador" (click)="editar(data)" data-toggle="modal" data-target="#modalcad"></i>
+                        <i data-toggle="modal" data-target="#modalpass2" *ngIf="(perfil$.users_edit  && data.orgao_id == user$.orgao_id) || perfil$.administrador" (click)="resetar(data)"  class="right fas fa-sync text-primary point marg5"></i>
+                        <i data-toggle="modal" data-target="#modaldel" *ngIf="(perfil$.users_del && data.orgao_id == user$.orgao_id) || perfil$.administrador" (click)="deletar(data)" class="right fas fa-trash text-danger point marg5"></i>
+                      </span>                                                          
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  
+                </tfoot>
+              </table>
+
+            </div>
+            <!-- ---------------------- -->
+            <div class="card-footer clearfix text-center">
+              <pagination-controls (pageChange)="p = $event" previousLabel="Anterior"
+              nextLabel="Próximo"  ></pagination-controls>
+            </div>
+            <!-- ---------------------- -->
+          </div>
+
+          <!-- /.modal cadastro -->
+        <div class="modal fade" id="modalcad" style="display: none;" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Cadastro</h4>
+                <button type="button" class="close" (click)="cadform.reset()" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form [formGroup]="cadform">
+                  <div class="row">
+                    <div class="col-4">
+                      <div class="form-group">
+                        <label for="nome">Nome<span class="text-danger">*</span></label>
+                        <input type="text"  class="form-control form-control-border" formControlName="nome" id="nome" required placeholder="Nome">
+                        
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="nome_guerra">Nome de Guerra</label>
+                        <input type="text" class="form-control form-control-border" formControlName="nome_guerra" id="nome_guerra"  placeholder="Nome de Guerra">
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="cpf">CPF<span class="text-danger">*</span></label>
+                        <input type="text" mask="000.000.000-00" class="form-control form-control-border" formControlName="cpf" id="cpf" required placeholder="CPF">
+                        
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="data_nascimento">Data Nascimento<span class="text-danger">*</span></label>
+                        <input type="date" class="form-control form-control-border" formControlName="data_nascimento" id="data_nascimento" required placeholder="Data Nascimento">
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="posto_grad_id">Posto/Grad<span class="text-danger">*</span></label>
+                        <select class="form-control form-control-border" formControlName="posto_grad_id" required id="posto_grad_id">
+                          <option></option>
+                          <option *ngFor="let postg of postograd$" [value]="postg.id">{{postg.nome}}</option>
+                            
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- FIM PRIMEIRA DIV -->
+                  <!-- INICIO SEGUNDA DIV -->
+                  <div class="row">
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="telefone1">Telefone 1<span class="text-danger">*</span></label>
+                        <input type="text" mask="(00) 00000-0000" class="form-control form-control-border" formControlName="telefone1" id="telefone1" required placeholder="Telefone 1">
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="telefone2">Telefone 2</label>
+                        <input type="text" mask="(00) 00000-0000" class="form-control form-control-border" formControlName="telefone2" id="telefone2" placeholder="Telefone 2">
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="form-group">
+                        <label for="email">E-mail<span class="text-danger">*</span></label>
+                        <input type="email" class="form-control form-control-border" formControlName="email" id="email" required placeholder="E-mail">
+                      </div>
+                    </div>
+                   
+                  </div>
+                  <!-- FIM SEGUNDA DIV -->
+                  <!-- INICIO terceira DIV -->
+                  <div class="row">
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="cep">CEP</label>
+                        <input type="text" (blur)="getCep()" mask="00000-000" class="form-control form-control-border" formControlName="cep" id="cep" placeholder="CEP">
+                      </div>
+                    </div>
+                    
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="estado_id">Estado<span class="text-danger">*</span></label>
+                        
+                        
+                        <select class="form-control form-control-border" (change)="getCidades()" formControlName="estado_id" required id="estado_id">
+                          <option></option>
+                          <option *ngFor="let estado of estados$" [value]="estado.id">{{estado.nome}}</option>
+                            
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="cidade_id">Cidade<span class="text-danger">*</span></label>
+                        <!--<select class="form-control form-control-border" formControlName="cidade" required id="cidade">
+                          <option></option>
+                          <option *ngFor="let cidade of cidades$" [value]="cidade.id">{{cidade.nome}}</option>
+                            
+                        </select>-->
+                        <ngx-select [items]="cidades$" optionTextField="nome" style="border-top: 0; border-left: 0;" formControlName="cidade_id" required id="cidade_id"></ngx-select>
+                      </div>
+                    </div>
+                   
+                    
+                   
+                  </div>
+                  <!-- FIM terceira DIV -->
+                  <!-- INICIO quarta DIV -->
+                  <div class="row">
+                    <div class="col-4">
+                      <div class="form-group">
+                        <label for="rua">Rua<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-border" formControlName="rua" id="rua" required placeholder="Rua">
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="numero">Número<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-border" formControlName="numero" id="numero" required placeholder="Número">
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="bairro">Bairro<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-border" formControlName="bairro" id="bairro" required placeholder="Bairro">
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="form-group">
+                        <label for="complemento">Complemento</label>
+                        <input type="text" class="form-control form-control-border" formControlName="complemento" id="complemento" placeholder="Complemento">
+                      </div>
+                    </div>
+                    
+                   
+                  </div>
+                  <!-- FIM quarta DIV -->
+                  <!-- INICIO quinta DIV -->
+                  <div class="row">
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="orgao_id">Orgão<span class="text-danger">*</span></label>
+                        <select class="form-control form-control-border" (change)="getSetores()" formControlName="orgao_id" required id="orgao_id">
+                          <option></option>
+                          <option *ngFor="let orgao of orgaos$" [value]="orgao.id">{{orgao.nome}}</option>
+                            
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="setor_id">Setor<span class="text-danger">*</span></label>
+                        <select class="form-control form-control-border" formControlName="setor_id" required id="setor_id">
+                          <option></option>
+                          <option *ngFor="let setor of setores$" [value]="setor.id">{{setor.nome}}</option>
+                            
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="funcao_id">Função<span class="text-danger">*</span></label>
+                        <select class="form-control form-control-border" formControlName="funcao_id" required id="funcao_id">
+                          <option></option>
+                          <option *ngFor="let funcao of funcoes$" [value]="funcao.id">{{funcao.nome}}</option>
+                            
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="perfil_id">Perfil<span class="text-danger">*</span></label>
+                        <select *ngIf="user$.perfil.administrador || user$.perfil.gestor" class="form-control form-control-border" formControlName="perfil_id" required id="perfil_id">
+                          <option></option>
+                          <option *ngFor="let perfil of perfis$" [value]="perfil.id">{{perfil.nome}}</option>
+                            
+                        </select>
+                        
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="form-group">
+                        <label for="nivel_id">Nível de acesso<span class="text-danger">*</span></label>
+                        <select *ngIf="user$.perfil.administrador || user$.perfil.gestor" class="form-control form-control-border" formControlName="nivel_id" required id="nivel_id">
+                          <option></option>
+                          <option *ngFor="let nivel of niveis$" [value]="nivel.id">{{nivel.nome}}</option>
+                            
+                        </select>
+                        
+                      </div>
+                    </div>
+                  </div>
+                  <!-- FIM quinta DIV -->
+                  <!-- INICIO quinta DIV -->
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="observacao">Observações</label>
+                        <textarea rows="5" class="col-12" formControlName="observacao" id="observacao" class="form-control form-control-border" placeholder="Observações..."></textarea>
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <!-- FIM quinta DIV -->
+                </form>
+              </div>
+              <div class="modal-footer ">
+               
+                <button type="button" class="btn btn-link" (click)="cadform.reset()" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" [disabled]="!cadform.valid" (click)="salvar()" data-dismiss="modal">Salvar</button>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+        </div>
+        <!-- /.fim modal cadastro -->
+
+          <!-- /.modal excluir -->
+          <div class="modal fade" id="modaldel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog ">
+              <div class="modal-content" *ngIf="delete$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Excluir</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  Tem certeza que deseja excluir o usuário <b>{{delete$.nome}}</b>?
+                </div>
+                <div class="modal-footer ">
+                
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  <button type="button" class="btn btn-danger" (click)="confirm(delete$.id)" data-dismiss="modal">Confirmar</button>
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal excluir -->
+
+          <!-- /.modal digital -->
+          <div class="modal fade" id="modaldig" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog ">
+              <div class="modal-content" *ngIf="digital$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Cadastrar digital do usuário <b>{{digital$.nome}}</b></h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body text-center" >                
+                  <h1 style="font-size: 90px;"><i class="fas fa-fingerprint" [ngClass]="digital$.digital ? 'text-success' : 'text-danger'" ></i></h1>
+
+                  
+                </div>
+                <div class="modal-footer ">
+                
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  <button type="button" class="btn btn-primary" (click)="confirm(digital$.id)" [disabled]="!cadformdigital.valid" data-dismiss="modal">Salvar</button>
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal digital -->
+
+          <!-- /.modal pass -->
+          <div class="modal fade" id="modalpass2" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog ">
+              <div class="modal-content" *ngIf="pass$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Alterar senha do usuário</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body text-center" >                
+                  Tem certeza que deseja alterar a senha do usuário <b>{{pass$.nome}}</b>?
+
+                  
+                </div>
+                <div class="modal-footer ">
+                
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  <button type="button" class="btn btn-primary" (click)="confirmpass(pass$.id)" data-dismiss="modal">Confirmar</button>
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal pass -->
+
+          <!-- /.modal foto -->
+          <div class="modal fade" id="modalfoto" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog ">
+              <div class="modal-content" *ngIf="foto$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Cadastrar foto do usuário <b>{{foto$.nome}}</b></h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                
+                <div class="modal-body text-center" >                
+                  <h1 style="font-size: 90px;" *ngIf="!foto$.foto"><i class="fas fa-portrait" [ngClass]="foto$.foto ? 'text-success' : 'text-danger'" ></i></h1>
+                  <img src="{{path+foto$.foto}}" *ngIf="foto$.foto" alt="user-avatar" width="120px" height="120px" class="img-circle img-fluid">
+                  <form [formGroup]="cadformfoto">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group">
+                          <label for="foto">Foto<span class="text-danger">*</span></label>
+                          <input type="file"  class="form-control form-control-border" accept="image/x-png,image/gif,image/jpeg" (change)="fileEvent($event)" formControlName="foto" id="foto" required >                          
+                        </div>
+                      </div>
+                    </div>
+                  </form>  
+                </div>
+                <div class="modal-footer ">
+                
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>                  
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal foto -->
+
+        </div>
+        <!-- FIM LISTA DE USUÁRIOS -->
+
+      </div>
+      <!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+<app-controlbar></app-controlbar>
+<app-footer></app-footer>
+
+</div>
+<!-- ./wrapper -->

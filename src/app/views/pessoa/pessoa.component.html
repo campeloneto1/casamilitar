@@ -1,0 +1,346 @@
+<div class="wrapper">
+    <app-navbar></app-navbar>
+    <app-sidebar></app-sidebar>
+
+    <div class="content-wrapper" style="min-height: 1416px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1 *ngIf="data$">{{data$.nome}}</h1>
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a [routerLink]="['/inicio']">Início</a></li>
+                  <li class="breadcrumb-item active">Pessoa</li>
+                </ol>
+              </div>
+            </div>
+          </div><!-- /.container-fluid -->
+        </section>
+    
+        <!-- Main content -->
+        <section class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-3">
+    
+                <!-- Profile Image -->
+                <div class="card card-orange card-outline">
+                  <div class="card-body box-profile">
+                    <div class="text-center">
+                      <img *ngIf="data$.foto" class="profile-user-img img-fluid img-circle" src="{{path+data$.foto}}" alt="User profile picture">
+                    </div>
+    
+                    <h3 class="profile-username text-center"><b>{{data$.nome}}</b></h3>
+    
+                    <p class="text-muted text-center">{{data$.alcunha}}</p>
+    
+                    <ul class="list-group list-group-unbordered mb-3">
+                      <li class="list-group-item" *ngIf="data$.cpf">
+                        <b>CPF</b> <span class="float-right">{{data$.cpf}}</span>
+                      </li>
+                      <li class="list-group-item" *ngIf="data$.data_nascimento">
+                        <b>Data Nascimento</b> <span class="float-right">{{data$.data_nascimento | date:'dd/MM/yyyy'}}</span>
+                      </li>
+                      <li class="list-group-item" *ngIf="data$.mae">
+                        <b>Mãe</b> <span class="float-right">{{data$.mae}}</span>
+                      </li>
+                      <li class="list-group-item" *ngIf="data$.pai">
+                        <b>Pai</b> <span class="float-right">{{data$.pai}}</span>
+                      </li>
+                      <li class="list-group-item" *ngIf="data$.influencia_id">
+                        <b>Influência</b> <span class="float-right">{{data$.influencia.nome}}</span>
+                      </li>
+                      <li class="list-group-item" *ngIf="data$.telefone1">
+                        <b>Telefone 1</b> <span class="float-right">{{data$.telefone1}}</span>
+                      </li>
+                      <li class="list-group-item" *ngIf="data$.telefone2">
+                        <b>Telefone 2</b> <span class="float-right">{{data$.telefone2}}</span>
+                      </li>
+                      <li class="list-group-item" *ngIf="data$.email">
+                        <b>E-mail</b> <span class="float-right">{{data$.email}}</span>
+                      </li>
+                    </ul>
+    
+                    
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+    
+                <!-- About Me Box -->
+                <div class="card card-orange card-outline" >
+                  <div class="card-header">
+                    <h3 class="card-title"><b>Redes Sociais</b></h3>
+                  </div>
+                  <div class="card-body">                     
+                    <ul class="list-inline">
+                      <li class="list-inline-item" *ngFor="let red of data$.redes_sociais">
+                       <a href="{{red.pivot.nome}}" target="_blank">{{red.nome}}</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- /.card-body -->
+                  <div class="card-header">
+                    <h3 class="card-title"><b>Endereço</b></h3>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">                     
+                    <p *ngIf="data$.rua">
+                      {{data$.rua}}, {{data$.numero}}, {{data$.complemento}}, {{data$.bairro}}, <span *ngIf="data$.cidade">{{data$.cidade.nome}}</span><span *ngIf="data$.estado"> - {{data$.estado.uf}}</span>
+                    </p>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+              <!-- /.col -->
+              <div class="col-md-9">
+                <div class="card card-orange card-outline">
+                  <div class="card-header ">
+                    <b>Observações</b>
+                    
+                  </div>
+                  <div class="card-body text-justify">
+                    {{data$.observacao}}
+                    
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+
+                <div class="row">
+
+
+                  <div class="col-md-6">
+                    <div class="card card-orange card-outline">
+                      <div class="card-header ">
+                        <b>Veículos</b>
+                        
+                      </div>
+                      <div class="card-body text-justify">
+                        <ol>
+                          <li *ngFor="let vei of data$.veiculos" style="margin-bottom: 10px;">
+                            <b>Tipo:</b> {{vei.veiculo.veiculo_tipo.nome}}, <b>Marca:</b> {{vei.veiculo.marca.nome}}, <b>Modelo:</b> {{vei.veiculo.modelo.nome}}, <b>Cor:</b> {{vei.veiculo.cor.nome}} <br/>
+                            <b>Placa:</b> <a [routerLink]="['/veiculo', vei.veiculo.id]">{{vei.veiculo.placa}}</a><span *ngIf="vei.veiculo.renavam">, <b>Renavam:</b> {{vei.veiculo.renavam}}</span><span *ngIf="vei.veiculo.chassi">, <b>Chassi:</b> {{vei.veiculo.chassi}}</span> 
+                            <span *ngIf="vei.manifestacao"><br/> <b>Manifestação:</b>  {{vei.manifestacao.nome}} ({{ vei.manifestacao.data | date:'dd/MM/YYYY' }} {{ vei.manifestacao.hora }})</span>
+                          </li>
+                        </ol>
+                        
+                      </div>
+                     
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card card-orange card-outline">
+                      <div class="card-header ">
+                        <b>Manifestações</b>
+                        
+                      </div>
+                      <div class="card-body text-justify">
+                        <ol>
+                          <li *ngFor="let man of data$.manifestacoes">
+                            <b>Categoria:</b> <span *ngIf="man.manifestacao.tipo_id == 2"> Evento</span><span *ngIf="man.manifestacao.tipo_id == 1"> Manifestação</span>, <span *ngIf="man.manifestacao.manifestacao_tipo"><b>Tipo:</b> {{man.manifestacao.manifestacao_tipo.nome}},</span> <b>Nome:</b> <a [routerLink]="['/manifestacao', man.manifestacao.id]">{{man.manifestacao.nome}}</a> <br/>
+                            <b>Data/Hora:</b> {{man.manifestacao.data | date:'dd/MM/YYYY'}} {{man.manifestacao.hora}}<br/>
+                            <span *ngIf="man.lider"><b >Lider:</b> Sim</span>
+                          </li>
+                        </ol>
+                        
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div> 
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card card-orange card-outline">
+                      <div class="card-header ">
+                        <b>Associações e Sindicatos</b>
+                        
+                      </div>
+                      <div class="card-body text-justify">
+                        <ol>
+                          <li *ngFor="let sind of data$.sindicatos">
+                            <b>Tipo:</b> <span *ngIf="sind.sindicato.tipo_id == 1"> Associação</span> <span *ngIf="sind.tipo_id == 2"> Sindicato</span>, <b>Nome:</b> <a [routerLink]="['/sindicato', sind.sindicato.id]">{{sind.sindicato.nome}}</a> <br/>
+                            <span *ngIf="sind.lider"><b >Lider:</b> Sim</span>
+                          </li>
+                        </ol>
+                        
+                      </div>
+                      
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="card card-orange card-outline">
+                      <div class="card-header ">
+                        <b>Arquivos</b>
+                        <button type="button" class="btn float-right btn-outline-primary btn-flat d-print-none" data-toggle="modal" data-target="#modalcadaqr"><i class="fas fa-plus"></i></button>
+                        
+                      </div>
+                      <div class="card-body text-justify">
+                        <ol>
+                          <li *ngFor="let arq of data$.arquivos">
+                            <span class="float-right d-print-none"><i data-toggle="modal" data-target="#modaldeletearq" (click)="deletar(arq)" class="right fas fa-trash text-danger point marg5"></i></span>
+                            <b>Tipo:</b> 
+                            <span *ngIf="arq.tipo_id == 1"> Foto</span> 
+                            <span *ngIf="arq.tipo_id == 2"> Vídeo</span>
+                            <span *ngIf="arq.tipo_id == 3"> Áudio</span>
+                            <span *ngIf="arq.tipo_id == 4"> PDF</span>
+                            <span *ngIf="arq.tipo_id == 5"> TXT</span>, 
+                            <b>Nome:</b> <a href="" data-toggle="modal" data-target="#modalshowarq" (click)="showarq(arq)"> {{arq.nome}}</a> <br /> ({{arq.data | date:'dd/MM/yyyy'}} {{arq.hora}})
+                          </li>
+                        </ol>
+                        
+                      </div>
+                      
+                    </div>
+                  </div>
+
+                 <!-- /.modal cadastro -->
+                  <div class="modal fade" id="modalcadaqr" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title">Cadastro de Arquivo</h4>
+                          <button type="button" class="close" (click)="cadformarq.reset()" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form [formGroup]="cadformarq">
+                            <div class="row">
+                              <div class="col-2">
+                                <div class="form-group">
+                                  <label for="tipo_id">Tipo<span class="text-danger">*</span></label>
+                                  <select class="form-control form-control-border" formControlName="tipo_id" id="tipo_id" required>
+                                    <option></option>
+                                    <option value="3">Áudio</option>
+                                    <option value="1">Foto</option>
+                                    <option value="4">PDF</option>
+                                    <!--<option value="5">TXT</option>-->
+                                    <option value="2">Vídeo</option>
+                                  </select>                                
+                                  
+                                </div>
+                              </div>
+                              <div class="col-4">
+                                <div class="form-group">
+                                  <label for="nome">Nome<span class="text-danger">*</span></label>
+                                  <input type="file" (change)="fileEvent($event)"  class="form-control form-control-border" formControlName="nome" id="nome" required placeholder="Nome">
+                                  
+                                </div>
+                              </div>
+                              <div class="col-2">
+                                <div class="form-group">
+                                  <label for="data">Data<span class="text-danger">*</span></label>
+                                  <input type="date"  class="form-control form-control-border" formControlName="data" id="data" required >
+                                  
+                                </div>
+                              </div>
+                              <div class="col-2">
+                                <div class="form-group">
+                                  <label for="hora">Hora<span class="text-danger">*</span></label>
+                                  <input type="time"  class="form-control form-control-border" formControlName="hora" id="hora" required >
+                                  
+                                </div>
+                              </div>
+
+                            </div>
+                            <!-- FIM PRIMEIRA DIV -->
+                          
+                          </form>
+                        </div>
+                        <div class="modal-footer ">
+                        
+                          <button type="button" class="btn btn-link" (click)="cadformarq.reset()" data-dismiss="modal">Fechar</button>
+                          <button type="button" class="btn btn-primary" [disabled]="!cadformarq.valid" (click)="salvar()" data-dismiss="modal">Salvar</button>
+                        </div>
+                      </div>
+                      <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                  </div>
+                  <!-- /.fim modal cadastro -->
+
+                  <!-- /.modal show arquivos -->
+                  <div class="modal fade" id="modalshowarq" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog ">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title">Arquivo</h4>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                        <div class="modal-body text-center" *ngIf="showarq$">
+                          <img *ngIf="showarq$.tipo_id == 1" [src]="path2+showarq$.nome | safe" width="100%" />
+                          <video *ngIf="showarq$.tipo_id == 2" width="100%" controls>
+                            <source [src]="path2+showarq$.nome | safe" type="video/mp4">
+                            
+                             Seu navegador não suporta esse vídeo.
+                          </video>
+                          <audio *ngIf="showarq$.tipo_id == 3" controls>
+                            <source [src]="path2+showarq$.nome | safe" type="audio/mp3">
+                            Seu navegador não suporta esse áudio.
+                          </audio>
+                          <iframe *ngIf="showarq$.tipo_id == 4 || showarq$.tipo_id == 5"  [src]="path2+showarq$.nome | safe" width="100%" height="500px">
+                          </iframe>
+                        </div>
+                        <div class="modal-footer ">
+                        
+                          <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                          
+                        </div>
+                      </div>
+                      <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                  </div>
+                  <!-- /.fim modal show arquivos -->
+
+                  <!-- /.modal delete arquivos -->
+                  <div class="modal fade" id="modaldeletearq" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog ">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title">Deletar Arquivo</h4>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                        <div class="modal-body text-center" *ngIf="deletearq$">
+                          Tem certeza que deseja excluir o arquivo <b>{{deletearq$.nome}}</b>?
+                        </div>
+                        <div class="modal-footer ">
+                        
+                          <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                          <button type="button" class="btn btn-danger" (click)="confirm(deletearq$.id)" data-dismiss="modal">Confirmar</button>
+                        </div>
+                      </div>
+                      <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                  </div>
+                  <!-- /.fim modal delete arquivos -->
+
+                </div>
+                
+              </div>
+
+              
+              <!-- /.col -->
+            </div>
+            <!-- /.row -->
+          </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+      </div>
+
+  
+  <app-controlbar></app-controlbar>
+  <app-footer></app-footer>
+  
+</div>
+<!-- ./wrapper -->

@@ -1,0 +1,199 @@
+<div class="wrapper">
+    <app-navbar></app-navbar>
+    <app-sidebar></app-sidebar>
+  
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Modelos</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">            
+              <li class="breadcrumb-item"><a [routerLink]="['/inicio']">Início</a></li>
+                  <li class="breadcrumb-item active">Modelos</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+  
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          
+          <!-- LISTA DE Modelos -->
+          <div class="col-12">
+            <div class="card card-orange card-outline">
+              <!-- --------- loading  ------------- -->
+              <div class="overlay " *ngIf="loading">
+                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+              </div>
+             <!-- -----------fim loading----------- -->
+              <!-- ---------------------- -->
+              <div class="card-header">
+  
+                <div class="row"> 
+                  <div class="col-1">
+                    <button type="button" class="btn btn-block btn-outline-primary btn-flat" data-toggle="modal" data-target="#modalcad"><i class="fas fa-plus"></i></button>
+                  </div>
+                  <div class="col-7">
+                  </div>
+                  <div class="col-1">
+                    <select [(ngModel)]="itenspage" class="form-control form-control-border">                                        
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                      <option value="150">150</option>
+                      <option value="250">250</option>
+                    </select>
+                  </div>
+                  <div class="col-3">
+                    <input type="text" name="table_search" [(ngModel)]="textfilter" (change)="filterdata()" class="form-control form-control-border float-right" placeholder="Pesquisar...">                  
+                  </div>
+                </div>
+              </div>
+  
+              <!-- ---------------------- -->
+  
+              <div class="card-body table-responsive p-0">
+              
+                <table  class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>NOME</th>  
+                      <th>MARCA</th>                   
+                      <th>EDITAR</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="data$?.length == 0">
+                    <tr>
+                      <td colspan="5" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="data$?.length != 0">
+                    <tr *ngFor="let data of data$  | paginate: { itemsPerPage: itenspage, currentPage: p }" class="hovers">
+                      <td>{{ data.id }}</td>
+                      <td>{{ data.nome }}</td>  
+                      <td>{{ data.marca.nome }}</td>     
+                                    
+                        <td>  
+                            <span class="editdata">
+                            <i class="right fas fa-edit text-primary point" (click)="editar(data)" data-toggle="modal" data-target="#modalcad"></i>
+                            <i data-toggle="modal" data-target="#modaldel" (click)="deletar(data)" class="right fas fa-trash text-danger point marg5"></i>
+                            </span>                                                          
+                        </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    
+                  </tfoot>
+                </table>
+  
+              </div>
+              <!-- ---------------------- -->
+              <div class="card-footer clearfix text-center">
+                <pagination-controls (pageChange)="p = $event" previousLabel="Anterior"
+                nextLabel="Próximo"  ></pagination-controls>
+              </div>
+              <!-- ---------------------- -->
+            </div>
+  
+            <!-- /.modal cadastro -->
+          <div class="modal fade" id="modalcad" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Cadastro</h4>
+                  <button type="button" class="close" (click)="cadform.reset()" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form [formGroup]="cadform">
+                    <div class="row">
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="nome">Nome<span class="text-danger">*</span></label>
+                          <input type="text"  class="form-control form-control-border" formControlName="nome" id="nome" required placeholder="Nome">
+                          
+                        </div>
+                      </div>
+                      <div class="col-3">
+                        <div class="form-group">
+                            <label for="marca_id">Marca<span class="text-danger">*</span></label>
+                            <select class="form-control form-control-border" formControlName="marca_id" required id="marca_id">
+                            <option></option>
+                            <option *ngFor="let marca of marcas$" [value]="marca.id">{{marca.nome}}</option>
+                                
+                            </select>
+                        </div>
+                        </div>
+     
+
+                    </div>
+                    <!-- FIM PRIMEIRA DIV -->
+                   
+                  </form>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" (click)="cadform.reset()" data-dismiss="modal">Fechar</button>
+                  <button type="button" class="btn btn-primary" [disabled]="!cadform.valid" (click)="salvar()" data-dismiss="modal">Salvar</button>
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal cadastro -->
+  
+           <!-- /.modal excluir -->
+          <div class="modal fade" id="modaldel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog ">
+              <div class="modal-content" *ngIf="delete$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Excluir</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  Tem certeza que deseja excluir a marca <b>{{delete$.nome}}</b>?
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  <button type="button" class="btn btn-danger" (click)="confirm(delete$.id)" data-dismiss="modal">Confirmar</button>
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal excluir -->
+  
+          </div>
+          <!-- FIM LISTA DE USUÁRIOS -->
+  
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  
+  
+  <app-controlbar></app-controlbar>
+  <app-footer></app-footer>
+  
+  </div>
+  <!-- ./wrapper -->

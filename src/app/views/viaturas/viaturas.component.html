@@ -1,0 +1,298 @@
+<div class="wrapper">
+    <app-navbar></app-navbar>
+    <app-sidebar></app-sidebar>
+  
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Viaturas</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">            
+              <li class="breadcrumb-item"><a [routerLink]="['/inicio']">Início</a></li>
+                  <li class="breadcrumb-item active">Viaturas</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+  
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          
+          <!-- LISTA DE Viaturas -->
+          <div class="col-12">
+            <div class="card card-orange card-outline">
+              <!-- --------- loading  ------------- -->
+              <div class="overlay " *ngIf="loading">
+                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+              </div>
+             <!-- -----------fim loading----------- -->
+              <!-- ---------------------- -->
+              <div class="card-header">
+  
+                <div class="row"> 
+                  <div class="col-1">
+                    <button type="button" *ngIf="perfil$.viaturas_cad" class="btn btn-block btn-outline-primary btn-flat" data-toggle="modal" data-target="#modalcad"><i class="fas fa-plus"></i></button>
+                  </div>
+                  <div class="col-7">
+                  </div>
+                  <div class="col-1">
+                    <select [(ngModel)]="itenspage" class="form-control form-control-border">                                        
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                      <option value="150">150</option>
+                      <option value="250">250</option>
+                    </select>
+                  </div>
+                  <div class="col-3">
+                    <input type="text" name="table_search" [(ngModel)]="textfilter" (keyup)="filterdata()" class="form-control form-control-border float-right" placeholder="Pesquisar...">                  
+                  </div>
+                </div>
+              </div>
+  
+              <!-- ---------------------- -->
+  
+              <div class="card-body table-responsive p-0">
+              
+                <table  class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>ORGÃO / SETOR</th> 
+                      <th>PLACA</th> 
+                      <th>RENAVAM</th> 
+                      <th>CHASSI</th> 
+                      <th>MARCA / MODELO</th>    
+                      <th>COR</th>   
+                      <th>TIPO VEÍCULO</th>                     
+                      <th>KM INICIAL</th> 
+                      <th>KM ATUAL</th> 
+                      <th>EDITAR</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="data$?.length == 0">
+                    <tr>
+                      <td colspan="10" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="data$?.length != 0">
+                    <tr *ngFor="let data of data$  | paginate: { itemsPerPage: itenspage, currentPage: p, id: 'lista1' }" class="hovers">
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.orgao.nome }} / {{ data.setor.nome }}</td> 
+                        <td>{{ data.placa }}</td> 
+                        <td>{{ data.renavam }}</td> 
+                        <td>{{ data.chassi }}</td> 
+
+                        <td>{{ data.marca.nome }} / {{ data.modelo.nome }}</td> 
+                        <td>{{ data.cor.nome }}</td> 
+                        <td>{{ data.veiculo_tipo.nome }}</td> 
+                        <td>{{ data.km_inicial }}</td> 
+                        <td>{{ data.km_atual }}</td>               
+                        <td>  
+                            <span class="editdata">
+                                <i *ngIf="perfil$.viaturas_edit" (click)="editar(data)" data-toggle="modal" data-target="#modalcad" class="right fas fa-edit text-primary point"></i>
+                                
+                                <i *ngIf="perfil$.viaturas_del"  data-toggle="modal" data-target="#modaldel" (click)="deletar(data)" class="right fas fa-trash text-danger point marg5"></i>                                
+                            </span>                                                          
+                        </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    
+                  </tfoot>
+                </table>
+  
+              </div>
+              <!-- ---------------------- -->
+              <div class="card-footer clearfix text-center">
+                <pagination-controls (pageChange)="p = $event" id="lista1" previousLabel="Anterior"
+                nextLabel="Próximo"  ></pagination-controls>
+              </div>
+              <!-- ---------------------- -->
+            </div>
+  
+            <!-- /.modal cadastro -->
+          <div class="modal fade" id="modalcad" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Cadastro</h4>
+                  <button type="button" class="close" (click)="cadform.reset()" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form [formGroup]="cadform">
+                    <!-- inicio primeira DIV -->
+                    <div class="row">
+                        <div class="col-2">
+                            <div class="form-group">
+                                <label for="orgao_id">Orgão<span class="text-danger">*</span></label>
+                                <select class="form-control form-control-border" (change)="getSetores()" formControlName="orgao_id" required id="orgao_id">
+                                    <option></option>
+                                    <option *ngFor="let orgao of orgaos$" [value]="orgao.id">{{orgao.nome}}</option>                                
+                                </select>
+                            </div>
+                          </div>
+                          <div class="col-2">
+                            <div class="form-group">
+                                <label for="setor_id">Setor<span class="text-danger">*</span></label>
+                                <select class="form-control form-control-border" formControlName="setor_id" required id="setor_id">
+                                    <option></option>
+                                    <option *ngFor="let setor of setores$" [value]="setor.id">{{setor.nome}}</option>                                
+                                </select>
+                            </div>
+                          </div>
+                          <div class="col-2">
+                            <div class="form-group">
+                                <label for="veiculo_tipo_id">Tipo de Veículo<span class="text-danger">*</span></label>
+                                <select class="form-control form-control-border" formControlName="veiculo_tipo_id" required id="veiculo_tipo_id">
+                                    <option></option>
+                                    <option *ngFor="let veiculotipo of veiculostipos$" [value]="veiculotipo.id">{{veiculotipo.nome}}</option>                                
+                                </select>
+                            </div>
+                          </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                            <label for="marca_id">Marca<span class="text-danger">*</span></label>
+                            <select class="form-control form-control-border" (change)="getModelos()" formControlName="marca_id" required id="marca_id">
+                                <option></option>
+                                <option *ngFor="let marca of marcas$" [value]="marca.id">{{marca.nome}}</option>                                
+                            </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                            <label for="modelo_id">Modelo<span class="text-danger">*</span></label>
+                            <select class="form-control form-control-border" formControlName="modelo_id" required id="modelo_id">
+                                <option></option>
+                                <option *ngFor="let modelo of modelos$" [value]="modelo.id">{{modelo.nome}}</option>                                
+                            </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                            <label for="cor_id">Cor<span class="text-danger">*</span></label>
+                            <select class="form-control form-control-border" formControlName="cor_id" required id="cor_id">
+                                <option></option>
+                                <option *ngFor="let cor of cores$" [value]="cor.id">{{cor.nome}}</option>                                
+                            </select>
+                        </div>
+                      </div>
+                      
+                    </div>
+                    <!-- FIM primeira DIV -->
+                    <!-- inicio segunda DIV -->
+                    <div class="row">
+                        <div class="col-2">
+                            <div class="form-group">
+                            <label for="placa">Placa<span class="text-danger">*</span></label>
+                            <input type="text" maxlength="7" minlength="7" class="form-control form-control-border" formControlName="placa" id="placa" required >
+                            
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="form-group">
+                            <label for="renavam">Renavam<span class="text-danger">*</span></label>
+                            <input type="text"  class="form-control form-control-border" formControlName="renavam" id="renavam" required >
+                            
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="form-group">
+                            <label for="chassi">Chassi</label>
+                            <input type="text"  class="form-control form-control-border" formControlName="chassi" id="chassi"  >
+                            
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="form-group">
+                            <label for="km_inicial">KM Inicial<span class="text-danger">*</span></label>
+                            <input type="number"  class="form-control form-control-border" formControlName="km_inicial" required id="km_inicial"  >
+                            
+                            </div>
+                        </div>
+                        
+                        
+
+                    </div>
+                    <!-- FIM segunda DIV -->
+                    <!-- INICIO quinta DIV -->
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="observacao">Observações</label>
+                        <textarea rows="5" class="col-12" formControlName="observacao" id="observacao" class="form-control form-control-border" placeholder="Observações..."></textarea>
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <!-- FIM quinta DIV -->
+                   
+                  </form>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" (click)="cadform.reset()" data-dismiss="modal">Fechar</button>
+                  <button type="button" class="btn btn-primary" [disabled]="!cadform.valid" (click)="salvar()" data-dismiss="modal">Salvar</button>
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal cadastro -->
+  
+           <!-- /.modal excluir -->
+          <div class="modal fade" id="modaldel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog ">
+              <div class="modal-content" *ngIf="delete$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Excluir</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  Tem certeza que deseja excluir o veículo <b>{{delete$.nome}}</b>?
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  <button type="button" class="btn btn-danger" (click)="confirm(delete$.id)" data-dismiss="modal">Confirmar</button>
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal excluir -->
+
+  
+          </div>
+          <!-- FIM LISTA DE USUÁRIOS -->
+  
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  
+  
+  <app-controlbar></app-controlbar>
+  <app-footer></app-footer>
+  
+  </div>
+  <!-- ./wrapper -->

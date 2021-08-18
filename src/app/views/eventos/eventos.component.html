@@ -1,0 +1,487 @@
+<div class="wrapper">
+    <app-navbar></app-navbar>
+    <app-sidebar></app-sidebar>
+  
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Eventos</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">            
+              <li class="breadcrumb-item"><a [routerLink]="['/inicio']">Início</a></li>
+                  <li class="breadcrumb-item active">Eventos</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+  
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          
+          <!-- LISTA DE Eventos -->
+          <div class="col-12">
+            <div class="card card-orange card-outline">
+              <!-- --------- loading  ------------- -->
+              <div class="overlay " *ngIf="loading">
+                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+              </div>
+             <!-- -----------fim loading----------- -->
+              <!-- ---------------------- -->
+              <div class="card-header">
+  
+                <div class="row"> 
+                  <div class="col-1">
+                    <button type="button" *ngIf="perfil$.eventos_cad" class="btn btn-block btn-outline-primary btn-flat" data-toggle="modal" data-target="#modalcad"><i class="fas fa-plus"></i></button>
+                  </div>
+                  <div class="col-7">
+                  </div>
+                  <div class="col-1">
+                    <select [(ngModel)]="itenspage" class="form-control form-control-border">                                        
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                      <option value="150">150</option>
+                      <option value="250">250</option>
+                    </select>
+                  </div>
+                  <div class="col-3">
+                    <input type="text" name="table_search" [(ngModel)]="textfilter" (keyup)="filterdata()" class="form-control form-control-border float-right" placeholder="Pesquisar...">                  
+                  </div>
+                </div>
+              </div>
+  
+              <!-- ---------------------- -->
+  
+              <div class="card-body table-responsive p-0">
+              
+                <table  class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>NOME</th> 
+                      <th>TIPO EVENTO</th> 
+                      <th>SETOR/ORGÃO</th> 
+                      <th>DATA</th>                     
+                      <th>HORA</th> 
+                      <th>PESSOAS</th> 
+                      <th>VIATURAS</th> 
+                      <th>EDITAR</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="data$?.length == 0">
+                    <tr>
+                      <td colspan="8" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="data$?.length != 0">
+                    <tr *ngFor="let data of data$  | paginate: { itemsPerPage: itenspage, currentPage: p, id: 'lista1' }" class="hovers">
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.nome }}</td> 
+                        <td>{{ data.eventotipo.nome }}</td> 
+                        <td>{{ data.setor.nome }} / {{ data.orgao.nome }}</td>    
+                        <td>{{ data.data | date:'dd/MM/yyyy'}}</td>    
+                        <td>{{ data.hora }}</td>   
+                        <td>
+                          
+                          <a class="btn btn-app bg-info" *ngIf="perfil$.eventos_usu" (click)="getUsuarios(data)" data-toggle="modal" data-target="#modalpessoas">
+                            <span class="badge bg-danger">{{data.usuarios.length}}</span>
+                            <i class="fas fa-users"></i> Pessoas
+                          </a>
+                          <!--<ul class="list-inline">
+                            <li class="list-inline-item" *ngFor="let usu of data.usuarios">{{usu.nome}} /</li>
+                          </ul>-->
+                        </td>   
+                        <td>
+                          
+                          <a class="btn btn-app bg-info" *ngIf="perfil$.eventos_vei" (click)="getViaturas(data)" data-toggle="modal" data-target="#modalveiculos">
+                            <span class="badge bg-danger">{{data.viaturas.length}}</span>
+                            <i class="fas fa-car"></i> Viaturas
+                          </a>
+                          <!--<ul class="list-inline">
+                            <li class="list-inline-item" *ngFor="let usu of data.usuarios">{{usu.nome}} /</li>
+                          </ul>-->
+                        </td>             
+                        <td>  
+                            <span class="editdata">
+                                <i *ngIf="perfil$.eventos_edit" (click)="editar(data)" data-toggle="modal" data-target="#modalcad" class="right fas fa-edit text-primary point"></i>
+                                <a target="_blank" [routerLink]="['/eventos', data.id]"><i   class="right fas fa-print text-primary point marg5"></i></a>
+                                <i data-toggle="modal" data-target="#modaldel" (click)="deletar(data)" *ngIf="perfil$.eventos_del && !data.pessoas && !data.veiculos" class="right fas fa-trash text-danger point marg5"></i>                                
+                            </span>                                                          
+                        </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    
+                  </tfoot>
+                </table>
+  
+              </div>
+              <!-- ---------------------- -->
+              <div class="card-footer clearfix text-center">
+                <pagination-controls (pageChange)="p = $event" id="lista1" previousLabel="Anterior"
+                nextLabel="Próximo"  ></pagination-controls>
+              </div>
+              <!-- ---------------------- -->
+            </div>
+  
+            <!-- /.modal cadastro -->
+          <div class="modal fade" id="modalcad" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Cadastro</h4>
+                  <button type="button" class="close" (click)="cadform.reset()" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form [formGroup]="cadform">
+                    <!-- inicio primeira DIV -->
+                    <div class="row">
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="nome">Nome<span class="text-danger">*</span></label>
+                          <input type="text"  class="form-control form-control-border" formControlName="nome" id="nome" required placeholder="Nome">                          
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                            <label for="orgao_id">Orgão<span class="text-danger">*</span></label>
+                            <select class="form-control form-control-border" (change)="getSetores()" formControlName="orgao_id" required id="orgao_id">
+                                <option></option>
+                                <option *ngFor="let orgao of orgaos$" [value]="orgao.id">{{orgao.nome}}</option>                                
+                            </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                            <label for="setor_id">Setor<span class="text-danger">*</span></label>
+                            <select class="form-control form-control-border" formControlName="setor_id" required id="setor_id">
+                                <option></option>
+                                <option *ngFor="let setor of setores$" [value]="setor.id">{{setor.nome}}</option>                                
+                            </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                            <label for="evento_tipo_id">Tipo de Evento<span class="text-danger">*</span></label>
+                            <select class="form-control form-control-border" formControlName="evento_tipo_id" required id="evento_tipo_id">
+                                <option></option>
+                                <option *ngFor="let eventotipo of eventostipos$" [value]="eventotipo.id">{{eventotipo.nome}}</option>                                
+                            </select>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- FIM primeira DIV -->
+                    <!-- inicio segunda DIV -->
+                    <div class="row">
+                        <div class="col-2">
+                            <div class="form-group">
+                            <label for="data">Data<span class="text-danger">*</span></label>
+                            <input type="date"  class="form-control form-control-border" formControlName="data" id="data" required >
+                            
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="form-group">
+                            <label for="hora">Hora<span class="text-danger">*</span></label>
+                            <input type="time"  class="form-control form-control-border" formControlName="hora" id="hora" required >
+                            
+                            </div>
+                        </div>
+                        <div class="col-2">
+                          <div class="form-group">
+                            <label for="estado_id">Estado<span class="text-danger">*</span></label>
+                            
+                            
+                            <select class="form-control form-control-border" (change)="getCidades()" formControlName="estado_id" required id="estado_id">
+                              <option></option>
+                              <option *ngFor="let estado of estados$" [value]="estado.id">{{estado.nome}}</option>
+                                
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-2">
+                          <div class="form-group">
+                            <label for="cidade_id">Cidade<span class="text-danger">*</span></label>
+                            <!--<select class="form-control form-control-border" formControlName="cidade" required id="cidade">
+                              <option></option>
+                              <option *ngFor="let cidade of cidades$" [value]="cidade.id">{{cidade.nome}}</option>
+                                
+                            </select>-->
+                            <ngx-select [items]="cidades$" optionTextField="nome" style="border-top: 0; border-left: 0;" formControlName="cidade_id" required id="cidade_id"></ngx-select>
+                          </div>
+                        </div>
+
+                    </div>
+                    <!-- FIM segunda DIV -->
+                    <!-- INICIO quinta DIV -->
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="observacao">Observações</label>
+                        <textarea rows="5" class="col-12" formControlName="observacao" id="observacao" class="form-control form-control-border" placeholder="Observações..."></textarea>
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <!-- FIM quinta DIV -->
+                   
+                  </form>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" (click)="cadform.reset()" data-dismiss="modal">Fechar</button>
+                  <button type="button" class="btn btn-primary" [disabled]="!cadform.valid" (click)="salvar()" data-dismiss="modal">Salvar</button>
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal cadastro -->
+  
+           <!-- /.modal excluir -->
+          <div class="modal fade" id="modaldel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog ">
+              <div class="modal-content" *ngIf="delete$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Excluir</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  Tem certeza que deseja excluir o evento <b>{{delete$.nome}}</b>?
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  <button type="button" class="btn btn-danger" (click)="confirm(delete$.id)" data-dismiss="modal">Confirmar</button>
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal excluir -->
+
+          <!-- /.modal pessoas -->
+          <div class="modal fade" id="modalpessoas" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content" *ngIf="selected$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Pessoas <button type="button" class="btn btn-block btn-outline-primary btn-flat" (click)="caduser = 1;"><i class="fas fa-plus"></i></button></h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    
+                  <div class="callout callout-success" *ngIf="caduser == 1">
+                    <h5>Cadastrar pessoa</h5>
+                    
+                    <form [formGroup]="cadformusu">
+                      <div class="row">
+                        <div class="col-4">
+                          <div class="form-group">
+                            <label for="user_id">Pessoa<span class="text-danger">*</span></label>                            
+                            <ngx-select [items]="usuarios$" [multiple]="true" [allowClear]="true"  optionTextField="nome" formControlName="user_id"  required id="user_id">
+                              <ng-template ngx-select-option let-option let-text="text">                                           
+                                {{option.data.nome}} ({{option.data.cpf}})
+                              </ng-template>
+                            </ngx-select>                        
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- FIM PRIMEIRA DIV -->
+                     
+                    </form>
+                    
+                    <button class="btn btn-primary btn-flat " [disabled]="!cadformusu.valid" (click)="cadastrousuario()">Salvar</button>
+                    <button class="btn btn-link btn-flat " (click)="caduser = 0">Cancelar</button> 
+                </div>      
+
+                  <div class="callout callout-danger" *ngIf="deleteusu$">
+                      <h5>Excluir pessoa</h5>
+                      
+                      <p>Tem certeza que deseja excluir a pessoa <b>{{deleteusu$.nome}}?</b></p>
+                      
+                      <button class="btn btn-danger btn-flat " (click)="confirmpessoa(deleteusu$.pivot.id)">Excluir</button>
+                      <button class="btn btn-link btn-flat " (click)="deleteusu$ = ''">Cancelar</button> 
+                  </div>
+                    
+
+                    <table  class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>NOME</th> 
+                            <th>CPF</th> 
+                            <th>TELEFONE 1</th> 
+                            <th>E-MAIL</th> 
+                            <th>EDITAR</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="pessoas$?.length == 0">
+                          <tr>
+                            <td colspan="6" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                          </tr>
+                        </tbody>
+                        <tbody *ngIf="pessoas$?.length != 0">
+                          <tr *ngFor="let datapessoa of pessoas$  | paginate: { itemsPerPage: itenspage, currentPage: q, id: 'lista2' }" class="hovers">
+                              <td>{{ datapessoa.id }}</td>
+                              <td>{{ datapessoa.nome }}</td> 
+                              <td>{{ datapessoa.cpf }}</td> 
+                              <td>{{ datapessoa.telefone1 }}</td>  
+                              <td>{{ datapessoa.email }}</td>       
+                              <td>  
+                                  <span class="editdata">                                    
+                                    <i (click)="deletarpessoa(datapessoa)" class="right fas fa-trash text-danger point marg5"></i>
+                                  </span>                                                          
+                              </td>
+                          </tr>
+                        </tbody>
+                        <tfoot class="text-center" >
+                            <pagination-controls (pageChange)="q = $event" id="lista2" previousLabel="Anterior"
+                            nextLabel="Próximo"  ></pagination-controls>
+                        </tfoot>
+                      </table>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal pessoas -->
+
+
+
+          <!-- /.modal veiculos -->
+          <div class="modal fade" id="modalveiculos" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content" *ngIf="selected$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Viaturas <button type="button" class="btn btn-block btn-outline-primary btn-flat" (click)="cadvei = 1;"><i class="fas fa-plus"></i></button></h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    
+                  <div class="callout callout-success" *ngIf="cadvei == 1">
+                    <h5>Cadastrar viatura</h5>
+                    
+                    <form [formGroup]="cadformvei">
+                      <div class="row">
+                        <div class="col-4">
+                          <div class="form-group">
+                            <label for="viatura_id">Viatura<span class="text-danger">*</span></label>                            
+                            <ngx-select [items]="transportes$" [multiple]="true" [allowClear]="true"  optionTextField="placa" formControlName="viatura_id"  required id="viatura_id"></ngx-select>                        
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- FIM PRIMEIRA DIV -->
+                     
+                    </form>
+                    
+                    <button class="btn btn-primary btn-flat " [disabled]="!cadformvei.valid" (click)="cadastroveiculo()">Salvar</button>
+                    <button class="btn btn-link btn-flat " (click)="caduser = 0">Cancelar</button> 
+                </div>      
+
+                  <div class="callout callout-danger" *ngIf="deletevei$">
+                      <h5>Excluir viatura</h5>
+                      
+                      <p>Tem certeza que deseja excluir a viatura <b>{{deletevei$.placa}}?</b></p>
+                      
+                      <button class="btn btn-danger btn-flat " (click)="confirmveiculo(deletevei$.pivot.id)">Excluir</button>
+                      <button class="btn btn-link btn-flat " (click)="deletevei$ = ''">Cancelar</button> 
+                  </div>
+                    
+
+                    <table  class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>SETOR / ORGÃO</th> 
+                            <th>MODELO / MARCA</th> 
+                            <th>PLACA</th> 
+                            <th>RENAVAM</th> 
+                            <th>CHASSI</th> 
+                            <th>EDITAR</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="viaturas$?.length == 0">
+                          <tr>
+                            <td colspan="6" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                          </tr>
+                        </tbody>
+                        <tbody *ngIf="viaturas$?.length != 0">
+                          <tr *ngFor="let dataveiculo of viaturas$  | paginate: { itemsPerPage: itenspage, currentPage: q, id: 'lista2' }" class="hovers">
+                              <td>{{ dataveiculo.id }}</td>
+                              <td>{{ dataveiculo.setor.nome }} / {{ dataveiculo.orgao.nome }}</td> 
+                              <td>{{ dataveiculo.modelo.nome }} / {{ dataveiculo.marca.nome }}</td> 
+                              <td>{{ dataveiculo.placa }}</td> 
+                              <td>{{ dataveiculo.renavam }}</td> 
+                              <td>{{ dataveiculo.chassi }}</td>      
+                              <td>  
+                                  <span class="editdata">                                    
+                                    <i (click)="deletarveiculo(dataveiculo)" class="right fas fa-trash text-danger point marg5"></i>
+                                  </span>                                                          
+                              </td>
+                          </tr>
+                        </tbody>
+                        <tfoot class="text-center" >
+                            <pagination-controls (pageChange)="q = $event" id="lista2" previousLabel="Anterior"
+                            nextLabel="Próximo"  ></pagination-controls>
+                        </tfoot>
+                      </table>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal veiculos -->
+
+
+  
+          </div>
+          <!-- FIM LISTA DE USUÁRIOS -->
+  
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  
+  
+  <app-controlbar></app-controlbar>
+  <app-footer></app-footer>
+  
+  </div>
+  <!-- ./wrapper -->

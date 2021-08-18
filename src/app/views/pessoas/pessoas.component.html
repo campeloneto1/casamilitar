@@ -1,0 +1,757 @@
+<div class="wrapper">
+    <app-navbar></app-navbar>
+    <app-sidebar></app-sidebar>
+  
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Pessoas</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">            
+              <li class="breadcrumb-item"><a [routerLink]="['/inicio']">Início</a></li>
+                  <li class="breadcrumb-item active">Pessoas</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+  
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          
+          <!-- LISTA DE Pessoas -->
+          <div class="col-12">
+            <div class="card card-orange card-outline">
+              <!-- --------- loading  ------------- -->
+              <div class="overlay " *ngIf="loading">
+                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+              </div>
+             <!-- -----------fim loading----------- -->
+              <!-- ---------------------- -->
+              <div class="card-header">
+  
+                <div class="row"> 
+                  <div class="col-1">
+                    <button type="button" class="btn btn-block btn-outline-primary btn-flat" data-toggle="modal" data-target="#modalcad"><i class="fas fa-plus"></i></button>
+                  </div>
+                  <div class="col-7">
+                  </div>
+                  <div class="col-1">
+                    <select [(ngModel)]="itenspage" class="form-control form-control-border">                                        
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                      <option value="150">150</option>
+                      <option value="250">250</option>
+                    </select>
+                  </div>
+                  <div class="col-3">
+                    <input type="text" name="table_search" [(ngModel)]="textfilter" (keyup)="filterdata()" class="form-control form-control-border float-right" placeholder="Pesquisar...">                  
+                  </div>
+                </div>
+              </div>
+  
+              <!-- ---------------------- -->
+  
+              <div class="card-body table-responsive p-0">
+              
+                <table  class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>NOME</th>
+                      <th>ALCUNHA</th>
+                      <th>CPF</th>                     
+                      <th>REDES SOCIAIS</th> 
+                      <th>VEÍCULOS</th>
+                      <th>EVENTOS/MANIFESTAÇÕES</th> 
+                      <th>ASSOCIAÇÕES/SINDICATOS</th> 
+                      <th>FOTO</th>
+                      <th>EDITAR</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="data$?.length == 0">
+                    <tr>
+                      <td colspan="11" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="data$?.length != 0">
+                    <tr *ngFor="let data of data$  | paginate: { itemsPerPage: itenspage, currentPage: p }" class="hovers">
+                      <td>{{ data.id }}</td>
+                      <td><a [routerLink]="['/pessoa', data.id]">{{ data.nome }}</a></td>
+                      <td>{{ data.alcunha }}</td>
+                      <td>{{ data.cpf }}</td>
+                      <td>
+                        <!--<button type="button" (click)="getRedes(data)"  data-toggle="modal" data-target="#modalredes" class="btn btn-sm btn-outline-info  btn-flat"> Redes Sociais <span class="badge bg-danger">{{data.redes_sociais.length}}</span></button>-->
+                        <a class="btn btn-app bg-info" (click)="getRedes(data)" data-toggle="modal" data-target="#modalredes">
+                            <span class="badge bg-danger">{{data.redes_sociais.length}}</span>
+                            <i class="fas fa-car fa-1" aria-hidden="true"></i> Redes Sociais
+                          </a>
+                      </td>
+                      <td>             
+                        <!--<button type="button" (click)="getVeiculos(data)"  data-toggle="modal" data-target="#modalveiculos" class="btn btn-sm btn-outline-info  btn-flat"> Veículos <span class="badge bg-danger">{{data.veiculos.length}}</span></button>          -->
+                        <a class="btn btn-app bg-info" (click)="getVeiculos(data)" data-toggle="modal" data-target="#modalveiculos">
+                            <span class="badge bg-danger">{{data.veiculos.length}}</span>
+                            <i class="fas fa-car"></i> Veículos
+                          </a>
+                      </td>
+                      <td>
+                        <!--<button type="button" (click)="getManifestacoes(data)"  data-toggle="modal" data-target="#modalmanifestacoes" class="btn btn-sm btn-outline-info  btn-flat"> Eventos/Manifestações <span class="badge bg-danger">{{data.manifestacoes.length}}</span></button>          -->
+                        <a class="btn btn-app btn-sm bg-info" (click)="getManifestacoes(data)" data-toggle="modal" data-target="#modalmanifestacoes">
+                            <span class="badge bg-danger">{{data.manifestacoes.length}}</span>
+                            <i class="fas fa-users"></i> Manifestações
+                          </a>
+                      </td>
+                      <td>
+                        <!--<button type="button" (click)="getSindicatos(data)"  data-toggle="modal" data-target="#modalsindicatos" class="btn btn-sm btn-outline-info btn-flat"> Associações/Sindicatos <span class="badge bg-danger">{{data.sindicatos.length}}</span></button>          -->
+                        <a class="btn btn-app bg-info" (click)="getSindicatos(data)" data-toggle="modal" data-target="#modalsindicatos">
+                            <span class="badge bg-danger">{{data.sindicatos.length}}</span>
+                            <i class="fas fa-users"></i> Sindicatos
+                          </a>
+                      </td>
+                      <td >
+                        <i class="fas fa-portrait point"  [ngClass]="data.foto ? 'text-success' : 'text-danger'" (click)="foto(data)" data-toggle="modal" data-target="#modalfoto"></i>
+                        
+                      </td>
+                     
+                      <td>  
+                        <span class="editdata">
+                          <i class="right fas fa-edit text-primary point" (click)="editar(data)" data-toggle="modal" data-target="#modalcad"></i>                        
+                          <i data-toggle="modal" *ngIf="data.veiculos.length == 0 && data.manifestacoes.length == 0 && data.sindicatos.length == 0" data-target="#modaldel" (click)="deletar(data)" class="right fas fa-trash text-danger point marg5"></i>
+                        </span>                                                          
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    
+                  </tfoot>
+                </table>
+  
+              </div>
+              <!-- ---------------------- -->
+              <div class="card-footer clearfix text-center">
+                <pagination-controls (pageChange)="p = $event" previousLabel="Anterior"
+                nextLabel="Próximo"  ></pagination-controls>
+              </div>
+              <!-- ---------------------- -->
+            </div>
+  
+            <!-- /.modal cadastro -->
+          <div class="modal fade" id="modalcad" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Cadastro</h4>
+                  <button type="button" class="close" (click)="cadform.reset()" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form [formGroup]="cadform">
+                    <div class="row">
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="nome">Nome<span class="text-danger">*</span></label>
+                          <input type="text"  class="form-control form-control-border" formControlName="nome" id="nome" required placeholder="Nome">
+                          
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="alcunha">Alcunha</label>
+                          <input type="text"  class="form-control form-control-border" formControlName="alcunha" id="alcunha"  placeholder="Alcunha">
+                          
+                        </div>
+                      </div>
+                     
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="cpf">CPF<span class="text-danger">*</span></label>
+                          <input type="text" (change)="checkCpf()" mask="000.000.000-00" class="form-control form-control-border" formControlName="cpf" id="cpf" required placeholder="CPF">                          
+                          
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="data_nascimento">Data Nascimento</label>
+                          <input type="date" class="form-control form-control-border" formControlName="data_nascimento" id="data_nascimento" placeholder="Data Nascimento">
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="influencia_id">Influência</label>
+                          
+                          
+                          <select class="form-control form-control-border" formControlName="influencia_id"  id="influencia_id">
+                            <option></option>
+                            <option *ngFor="let influencia of influencias$" [value]="influencia.id">{{influencia.nome}}</option>
+                              
+                          </select>
+                        </div>
+                      </div>
+                      
+                    </div>
+                    <!-- FIM PRIMEIRA DIV -->
+                    <!-- INICIO SEGUNDA DIV -->
+                    <div class="row">
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="mae">Mãe</label>
+                          <input type="text"  class="form-control form-control-border" formControlName="mae" id="mae"  placeholder="Mãe">
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="pai">Pai</label>
+                          <input type="text" class="form-control form-control-border" formControlName="pai" id="pai" placeholder="Pai">
+                        </div>
+                      </div>
+                      
+                     
+                    </div>
+                    <!-- FIM SEGUNDA DIV -->
+                    <!-- INICIO SEGUNDA DIV -->
+                    <div class="row">
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="telefone1">Telefone 1</label>
+                          <input type="text" mask="(00) 00000-0000" class="form-control form-control-border" formControlName="telefone1" id="telefone1"  placeholder="Telefone 1">
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="telefone2">Telefone 2</label>
+                          <input type="text" mask="(00) 00000-0000" class="form-control form-control-border" formControlName="telefone2" id="telefone2" placeholder="Telefone 2">
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="email">E-mail</label>
+                          <input type="email" class="form-control form-control-border" formControlName="email" id="email"  placeholder="E-mail">
+                        </div>
+                      </div>
+                     
+                    </div>
+                    <!-- FIM SEGUNDA DIV -->
+                    <!-- INICIO terceira DIV -->
+                    <div class="row">
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="cep">CEP</label>
+                          <input type="text" (blur)="getCep()" mask="00000-000" class="form-control form-control-border" formControlName="cep" id="cep" placeholder="CEP">
+                        </div>
+                      </div>
+                      
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="estado_id">Estado</label>
+                          
+                          
+                          <select class="form-control form-control-border" (change)="getCidades()" formControlName="estado_id"  id="estado_id">
+                            <option></option>
+                            <option *ngFor="let estado of estados$" [value]="estado.id">{{estado.nome}}</option>
+                              
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="cidade_id">Cidade</label>
+                          <!--<select class="form-control form-control-border" formControlName="cidade" required id="cidade">
+                            <option></option>
+                            <option *ngFor="let cidade of cidades$" [value]="cidade.id">{{cidade.nome}}</option>
+                              
+                          </select>-->
+                          <ngx-select [items]="cidades$" optionTextField="nome" style="border-top: 0; border-left: 0;" formControlName="cidade_id"  id="cidade_id"></ngx-select>
+                        </div>
+                      </div>
+                     
+                      
+                     
+                    </div>
+                    <!-- FIM terceira DIV -->
+                    <!-- INICIO quarta DIV -->
+                    <div class="row">
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="rua">Rua</label>
+                          <input type="text" class="form-control form-control-border" formControlName="rua" id="rua"  placeholder="Rua">
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="numero">Número</label>
+                          <input type="text" class="form-control form-control-border" formControlName="numero" id="numero"  placeholder="Número">
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="bairro">Bairro</label>
+                          <input type="text" class="form-control form-control-border" formControlName="bairro" id="bairro"  placeholder="Bairro">
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="complemento">Complemento</label>
+                          <input type="text" class="form-control form-control-border" formControlName="complemento" id="complemento" placeholder="Complemento">
+                        </div>
+                      </div>
+                      
+                     
+                    </div>
+                    <!-- FIM quarta DIV -->
+                   
+                    <!-- INICIO quinta DIV -->
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group">
+                          <label for="observacao">Observações</label>
+                          <textarea rows="5" class="col-12" formControlName="observacao" id="observacao" class="form-control form-control-border" placeholder="Observações..."></textarea>
+                        </div>
+                      </div>
+                      
+                    </div>
+                    <!-- FIM quinta DIV -->
+                  </form>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" (click)="cadform.reset()" data-dismiss="modal">Fechar</button>
+                  <button type="button" class="btn btn-primary" [disabled]="!cadform.valid" (click)="salvar()" data-dismiss="modal">Salvar</button>
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal cadastro -->
+  
+            <!-- /.modal excluir -->
+            <div class="modal fade" id="modaldel" style="display: none;" aria-hidden="true">
+              <div class="modal-dialog ">
+                <div class="modal-content" *ngIf="delete$">
+                  <div class="modal-header">
+                    <h4 class="modal-title">Excluir</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    Tem certeza que deseja excluir a pessoa <b>{{delete$.nome}}</b>?
+                  </div>
+                  <div class="modal-footer ">
+                  
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-danger" (click)="confirm(delete$.id)" data-dismiss="modal">Confirmar</button>
+                  </div>
+                </div>
+                <!-- /.modal-content -->
+              </div>
+              <!-- /.modal-dialog -->
+            </div>
+            <!-- /.fim modal excluir -->                        
+  
+            <!-- /.modal foto -->
+            <div class="modal fade" id="modalfoto" style="display: none;" aria-hidden="true">
+              <div class="modal-dialog ">
+                <div class="modal-content" *ngIf="foto$">
+                  <div class="modal-header">
+                    <h4 class="modal-title">Cadastrar foto da pessoa <b>{{foto$.nome}}</b></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                    </button>
+                  </div>
+                  
+                  <div class="modal-body text-center" >                
+                    <h1 style="font-size: 90px;" *ngIf="!foto$.foto"><i class="fas fa-portrait" [ngClass]="foto$.foto ? 'text-success' : 'text-danger'" ></i></h1>
+                    <img src="{{path+foto$.foto}}" *ngIf="foto$.foto" alt="user-avatar" width="120px" height="120px" class="img-circle img-fluid">
+                    <form [formGroup]="cadformfoto">
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="form-group">
+                            <label for="foto">Foto<span class="text-danger">*</span></label>
+                            <input type="file"  class="form-control form-control-border" accept="image/x-png,image/gif,image/jpeg" (change)="fileEvent($event)" formControlName="foto" id="foto" required >                          
+                          </div>
+                        </div>
+                      </div>
+                    </form>  
+                  </div>
+                  <div class="modal-footer ">
+                  
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>                  
+                  </div>
+                </div>
+                <!-- /.modal-content -->
+              </div>
+              <!-- /.modal-dialog -->
+            </div>
+            <!-- /.fim modal foto -->
+
+
+            <!-- /.modal veiculos -->
+          <div class="modal fade" id="modalveiculos" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content" *ngIf="selected$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Veículos <button type="button" class="btn btn-block btn-outline-primary btn-flat" (click)="cadvei = 1;"><i class="fas fa-plus"></i></button></h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    
+                  <div class="callout callout-success" *ngIf="cadvei == 1">
+                    <h5>Cadastrar veículo</h5>
+                    
+                    <form [formGroup]="cadformvei">
+                      <div class="row">
+                        <div class="col-4">
+                          <div class="form-group">
+                            <label for="veiculo_id">Veículo<span class="text-danger">*</span></label>                            
+                            <ngx-select [items]="transportes$" [multiple]="true" [allowClear]="true"  optionTextField="placa" formControlName="veiculo_id"  required id="veiculo_id"></ngx-select>                        
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- FIM PRIMEIRA DIV -->
+                     
+                    </form>
+                    
+                    <button class="btn btn-primary btn-flat " [disabled]="!cadformvei.valid" (click)="cadastroveiculo()">Salvar</button>
+                    <button class="btn btn-link btn-flat " (click)="cadvei = 0">Cancelar</button> 
+                </div>      
+
+                  <div class="callout callout-danger" *ngIf="deletevei$">
+                      <h5>Excluir veículo</h5>
+                      
+                      <p>Tem certeza que deseja excluir o veículo <b>{{deletevei$.veiculo.placa}}?</b></p>
+                      
+                      <button class="btn btn-danger btn-flat " (click)="confirmveiculo(deletevei$.id)">Excluir</button>
+                      <button class="btn btn-link btn-flat " (click)="deletevei$ = ''">Cancelar</button> 
+                  </div>
+                    
+
+                    <table  class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            <th>ID</th>                        
+                            <th>MODELO / MARCA</th> 
+                            <th>PLACA</th> 
+                            <th>RENAVAM</th> 
+                            <th>CHASSI</th> 
+                            <th>COR</th> 
+                            <th>EVENTOS/MANIFESTAÇÕES</th> 
+                            <th>EDITAR</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="veiculos$?.length == 0">
+                          <tr>
+                            <td colspan="8" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                          </tr>
+                        </tbody>
+                        <tbody *ngIf="veiculos$?.length != 0">
+                          <tr *ngFor="let dataveiculo of veiculos$  | paginate: { itemsPerPage: itenspage, currentPage: q, id: 'lista2' }" class="hovers">
+                              <td>{{ dataveiculo.veiculo.id }}</td>
+                            
+                              <td>{{ dataveiculo.veiculo.modelo.nome }} / {{ dataveiculo.veiculo.marca.nome }}</td> 
+                              <td>{{ dataveiculo.veiculo.placa }}</td> 
+                              <td>{{ dataveiculo.veiculo.renavam }}</td> 
+                              <td>{{ dataveiculo.veiculo.chassi }}</td> 
+                              <td>{{ dataveiculo.veiculo.cor.nome }}</td>    
+                              <td><span *ngIf="dataveiculo.manifestacao">{{ dataveiculo.manifestacao.nome }} ({{ dataveiculo.manifestacao.data | date:'dd/MM/YYYY' }} {{ dataveiculo.manifestacao.hora}})</span></td>      
+                              <td>  
+                                  <span class="editdata">                                    
+                                    <i (click)="deletarveiculo(dataveiculo)" class="right fas fa-trash text-danger point marg5"></i>
+                                  </span>                                                          
+                              </td>
+                          </tr>
+                        </tbody>
+                        <tfoot class="text-center" >
+                            <pagination-controls (pageChange)="q = $event" id="lista2" previousLabel="Anterior"
+                            nextLabel="Próximo"  ></pagination-controls>
+                        </tfoot>
+                      </table>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal veiculos -->
+
+          <!-- /.modal manifestacoes -->
+          <div class="modal fade" id="modalmanifestacoes" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content" *ngIf="selected$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Eventos e Manifestações </h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+
+                  <div class="callout callout-danger" *ngIf="deleteman$">
+                      <h5>Excluir</h5>
+                      
+                      <p>Tem certeza que deseja excluir <span *ngIf="deleteman$.manifestacao.tipo_id == 1">a manifestação</span> <span *ngIf="deleteman$.manifestacao.tipo_id == 2">o evento</span> <b> {{deleteman$.manifestacao.nome}}?</b></p>
+                      
+                      <button class="btn btn-danger btn-flat " (click)="confirmmanifest(deleteman$.id)">Excluir</button>
+                      <button class="btn btn-link btn-flat " (click)="deleteman$ = ''">Cancelar</button> 
+                  </div>
+                    
+
+                    <table  class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            <th>ID</th>                        
+                            <th>CATEGORIA</th> 
+                            <th>TIPO</th> 
+                            <th>NOME</th> 
+                            <th>DATA/HORA</th> 
+                            <th>LIDER</th> 
+                            <th>EDITAR</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="manifestacoes$?.length == 0">
+                          <tr>
+                            <td colspan="7" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                          </tr>
+                        </tbody>
+                        <tbody *ngIf="manifestacoes$?.length != 0">
+                          <tr *ngFor="let datamanifest of manifestacoes$  | paginate: { itemsPerPage: itenspage, currentPage: r, id: 'lista3' }" class="hovers">
+                              <td>{{ datamanifest.manifestacao.id }}</td>     
+                              <td>
+                                <span *ngIf="datamanifest.manifestacao.tipo_id == 2">Evento</span>
+                                <span *ngIf="datamanifest.manifestacao.tipo_id == 1">Manifestação</span>
+                              </td>                            
+                              <td><span *ngIf="datamanifest.manifestacao.manifestacao_tipo">{{ datamanifest.manifestacao.manifestacao_tipo.nome }}</span></td> 
+                              <td><a [routerLink]="['/manifestacao', datamanifest.manifestacao.id]" data-dismiss="modal">{{ datamanifest.manifestacao.nome }}</a></td> 
+                              <td>{{ datamanifest.manifestacao.data | date:'dd/MM/YYYY' }} {{ datamanifest.manifestacao.hora }}</td> 
+                              <td>
+                                <span *ngIf="datamanifest.lider">Sim</span>                                
+                              </td>   
+                              <td>  
+                                  <span class="editdata">                                    
+                                    <i (click)="deletarmanifestacao(datamanifest)" class="right fas fa-trash text-danger point marg5"></i>
+                                  </span>                                                          
+                              </td>
+                          </tr>
+                        </tbody>
+                        <tfoot class="text-center" >
+                            <pagination-controls (pageChange)="r = $event" id="lista3" previousLabel="Anterior"
+                            nextLabel="Próximo"  ></pagination-controls>
+                        </tfoot>
+                      </table>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal manifestacoes -->
+
+          <!-- /.modal redes sociais -->
+          <div class="modal fade" id="modalredes" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content" *ngIf="selected$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Redes Sociais <button type="button" class="btn btn-block btn-outline-primary btn-flat" (click)="cadrede = 1;"><i class="fas fa-plus"></i></button></h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+
+                  <div class="callout callout-success" *ngIf="cadrede == 1">
+                    <h5>Cadastrar rede social</h5>
+                    
+                    <form [formGroup]="cadformrede">
+                      <div class="row">
+                        <div class="col-2">
+                          <div class="form-group">
+                            <label for="rede_social_id">Rede Social<span class="text-danger">*</span></label>                            
+                            <ngx-select [items]="tiposredes$" [allowClear]="true"  optionTextField="nome" formControlName="rede_social_id"  required id="rede_social_id"></ngx-select>                        
+                          </div>
+                        </div>
+                        <div class="col-4">
+                          <div class="form-group">
+                            <label for="nome">Nome<span class="text-danger">*</span></label>                            
+                            <input type="text" formControlName="nome" class="form-control form-control-border"  required id="nome" placeholder="Nome" />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- FIM PRIMEIRA DIV -->
+                     
+                    </form>
+                    
+                    <button class="btn btn-primary btn-flat " [disabled]="!cadformrede.valid" (click)="cadastroredesocial()">Salvar</button>
+                    <button class="btn btn-link btn-flat " (click)="cadrede = 0">Cancelar</button> 
+                </div>  
+
+                  <div class="callout callout-danger" *ngIf="deleterede$">
+                      <h5>Excluir rede social</h5>
+                      
+                      <p>Tem certeza que deseja excluir a rede social <b>{{deleterede$.nome}}?</b></p>
+                      
+                      <button class="btn btn-danger btn-flat " (click)="confirmrede(deleterede$.pivot.id)">Excluir</button>
+                      <button class="btn btn-link btn-flat " (click)="deleterede$ = ''">Cancelar</button> 
+                  </div>
+                    
+
+                    <table  class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            <th>ID</th>                        
+                            <th>REDE SOCIAL</th> 
+                            <th>LINK</th>  
+                            <th>EDITAR</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="redessociais$?.length == 0">
+                          <tr>
+                            <td colspan="6" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                          </tr>
+                        </tbody>
+                        <tbody *ngIf="redessociais$?.length != 0">
+                          <tr *ngFor="let redesocial of redessociais$  | paginate: { itemsPerPage: itenspage, currentPage: s, id: 'lista4' }" class="hovers">
+                              <td>{{ redesocial.id }}</td>                            
+                              <td>{{ redesocial.nome }}</td> 
+                              <td>{{ redesocial.pivot.nome }}</td> 
+                             
+                              <td>  
+                                  <span class="editdata">                                    
+                                    <i (click)="deletarrede(redesocial)" class="right fas fa-trash text-danger point marg5"></i>
+                                  </span>                                                          
+                              </td>
+                          </tr>
+                        </tbody>
+                        <tfoot class="text-center" >
+                            <pagination-controls (pageChange)="s = $event" id="lista4" previousLabel="Anterior"
+                            nextLabel="Próximo"  ></pagination-controls>
+                        </tfoot>
+                      </table>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal redes sociais -->
+
+          <!-- /.modal sindicatos -->
+          <div class="modal fade" id="modalsindicatos" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content" *ngIf="selected$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Sindicatos</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+
+                  <div class="callout callout-danger" *ngIf="deletesind$">
+                    <h5>Excluir sindicato</h5>
+                    
+                    <p>Tem certeza que deseja excluir o sindicato <b>{{deletesind$.sindicato.nome}}?</b></p>
+                    
+                    <button class="btn btn-danger btn-flat " (click)="confirmsind(deletesind$.id)">Excluir</button>
+                    <button class="btn btn-link btn-flat " (click)="deletesind$ = ''">Cancelar</button> 
+                  </div>
+
+                      <table  class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            <th>ID</th>                        
+                            <th>TIPO</th> 
+                            <th>NOME</th> 
+                            <th>TELEFONE 1</th> 
+                            <th>LIDER</th> 
+                            <th>EDITAR</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="sindicatos$?.length == 0">
+                          <tr>
+                            <td colspan="6" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                          </tr>
+                        </tbody>
+                        <tbody *ngIf="sindicatos$?.length != 0">
+                          <tr *ngFor="let datasind of sindicatos$  | paginate: { itemsPerPage: itenspage, currentPage: t, id: 'lista5' }" class="hovers">
+                              <td>{{ datasind.sindicato.id }}</td>                            
+                              <td>
+                                <span *ngIf="datasind.sindicato.tipo_id == 1">Associação</span>
+                                <span *ngIf="datasind.sindicato.tipo_id == 2">Sindicato</span>
+                              </td> 
+                              <td><a [routerLink]="['/sindicato', datasind.sindicato.id]" data-dismiss="modal">{{ datasind.sindicato.nome }}</a></td> 
+                              <td>{{ datasind.sindicato.telefone1 }}</td> 
+                              <td>
+                                <span *ngIf="datasind.lider">Sim</span>                                
+                              </td>   
+                              <td>  
+                                  <span class="editdata">                                    
+                                    <i (click)="deletarsind(datasind)" class="right fas fa-trash text-danger point marg5"></i>
+                                  </span>                                                          
+                              </td>
+                          </tr>
+                        </tbody>
+                        <tfoot class="text-center" >
+                            <pagination-controls (pageChange)="t = $event" id="lista5" previousLabel="Anterior"
+                            nextLabel="Próximo"  ></pagination-controls>
+                        </tfoot>
+                      </table>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal manifestacoes -->
+  
+          </div>
+          <!-- FIM LISTA DE USUÁRIOS -->
+  
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  
+  
+  <app-controlbar></app-controlbar>
+  <app-footer></app-footer>
+  
+  </div>
+  <!-- ./wrapper -->

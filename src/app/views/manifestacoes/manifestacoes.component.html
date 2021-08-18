@@ -1,0 +1,553 @@
+<div class="wrapper">
+    <app-navbar></app-navbar>
+    <app-sidebar></app-sidebar>
+  
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Eventos e Manifestações</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">            
+              <li class="breadcrumb-item"><a [routerLink]="['/inicio']">Início</a></li>
+                  <li class="breadcrumb-item active">Eventos e Manifestações</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+  
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          
+          <!-- LISTA DE Manifestações -->
+          <div class="col-12">
+            <div class="card card-orange card-outline">
+              <!-- --------- loading  ------------- -->
+              <div class="overlay " *ngIf="loading">
+                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+              </div>
+             <!-- -----------fim loading----------- -->
+              <!-- ---------------------- -->
+              <div class="card-header">
+  
+                <div class="row"> 
+                  <div class="col-1">
+                    <button type="button"  class="btn btn-block btn-outline-primary btn-flat" data-toggle="modal" data-target="#modalcad"><i class="fas fa-plus"></i></button>
+                  </div>
+                  <div class="col-7">
+                  </div>
+                  <div class="col-1">
+                    <select [(ngModel)]="itenspage" class="form-control form-control-border">                                        
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                      <option value="150">150</option>
+                      <option value="250">250</option>
+                    </select>
+                  </div>
+                  <div class="col-3">
+                    <input type="text" name="table_search" [(ngModel)]="textfilter" (keyup)="filterdata()" class="form-control form-control-border float-right" placeholder="Pesquisar...">                  
+                  </div>
+                </div>
+              </div>
+  
+              <!-- ---------------------- -->
+  
+              <div class="card-body table-responsive p-0">
+              
+                <table  class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>CATEGORIA</th>
+                      <th>NOME</th>
+                      <th>DATA/HORA</th>                     
+                      <th>TIPO</th>      
+                      <th>PESSOAS</th>  
+                      <th>VEÍCULOS</th>   
+                      <th>STATUS</th>                     
+                      <th>EDITAR</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="data$?.length == 0">
+                    <tr>
+                      <td colspan="11" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="data$?.length != 0">
+                    <tr *ngFor="let data of data$  | paginate: { itemsPerPage: itenspage, currentPage: p }" class="hovers">
+                      <td>{{ data.id }}</td>
+                      <td>
+                        <span *ngIf="data.tipo_id == 1">Manifestação</span>
+                        <span *ngIf="data.tipo_id == 2">Evento</span>
+                      </td>
+                      <td><a [routerLink]="['/manifestacao', data.id]">{{ data.nome }}</a></td>
+                      <td>{{ data.data | date:'dd/MM/yyyy'}} {{ data.hora}}</td>
+                      <td>
+                        <span *ngIf="data.manifestacao_tipo">{{ data.manifestacao_tipo.nome }}</span>
+                      </td>       
+                      <td>
+                        <!--<button type="button" (click)="getPessoas(data)"  data-toggle="modal" data-target="#modalpessoas" class="btn btn-sm btn-outline-info  btn-flat"> Pessoas <span class="badge bg-danger">{{data.pessoas.length}}</span></button>          -->
+                        <a class="btn btn-app bg-info" (click)="getPessoas(data)" data-toggle="modal" data-target="#modalpessoas">
+                            <span class="badge bg-danger">{{data.pessoas.length}}</span>
+                            <i class="fas fa-users"></i> Pessoas
+                          </a>
+                      </td>
+                      <td>
+                        <!--<button type="button" (click)="getVeiculos(data)"  data-toggle="modal" data-target="#modalveiculos" class="btn btn-sm btn-outline-info  btn-flat"> Veículos <span class="badge bg-danger">{{data.veiculos.length}}</span></button>          -->
+                        <a class="btn btn-app bg-info" (click)="getVeiculos(data)" data-toggle="modal" data-target="#modalveiculos">
+                            <span class="badge bg-danger">{{data.veiculos.length}}</span>
+                            <i class="fas fa-car"></i> Veículos
+                          </a>
+                      </td>    
+                      <td>
+                        <span *ngIf="data.tipo_id == 2">
+                          <i *ngIf="data.previa" class="fa fa-circle" style="color: green;" aria-hidden="true"></i>
+                          <i *ngIf="data.sintese && !data.previa" class="fa fa-circle" style="color: red;" aria-hidden="true"></i>
+                          <i *ngIf="data.sintese" class="fa fa-circle" style="color: green;" aria-hidden="true"></i>
+                        </span>                        
+                      </td>                               
+                      <td>  
+                        <span class="editdata">
+                          <i class="right fas fa-edit text-primary point" (click)="editar(data)" data-toggle="modal" data-target="#modalcad"></i>                        
+                          <i data-toggle="modal" *ngIf="data.pessoas.length == 0 && data.veiculos.length == 0" data-target="#modaldel" (click)="deletar(data)" class="right fas fa-trash text-danger point marg5"></i>
+                        </span>                                                          
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    
+                  </tfoot>
+                </table>
+  
+              </div>
+              <!-- ---------------------- -->
+              <div class="card-footer clearfix text-center">
+                <pagination-controls (pageChange)="p = $event" previousLabel="Anterior"
+                nextLabel="Próximo"  ></pagination-controls>
+              </div>
+              <!-- ---------------------- -->
+            </div>
+  
+            <!-- /.modal cadastro -->
+          <div class="modal fade" id="modalcad" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Cadastro</h4>
+                  <button type="button" class="close" (click)="cadform.reset()" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form [formGroup]="cadform">
+                    <div class="row">
+                      <div class="col-2">
+                        <div class="form-group">
+                            <label for="tipo_id">Categoria<span class="text-danger">*</span></label>
+                            
+                            
+                            <select class="form-control form-control-border" required formControlName="tipo_id"  id="tipo_id">
+                              <option></option>
+                              <option value="2">Evento</option> 
+                              <option value="1">Manifestação</option>                                
+                            </select>
+                        </div>
+                      </div>
+                     <div class="col-2" *ngIf="cadform.value.tipo_id == 1">
+                        <div class="form-group">
+                            <label for="manifestacao_tipo_id">Tipo de Manifestação</label>
+                            
+                            
+                            <select class="form-control form-control-border"  formControlName="manifestacao_tipo_id"  id="manifestacao_tipo_id">
+                            <option></option>
+                            <option *ngFor="let tipoman of manifestacoestipos$" [value]="tipoman.id">{{tipoman.nome}}</option>
+                                
+                            </select>
+                        </div>
+                        </div>
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="nome">Nome<span class="text-danger">*</span></label>
+                          <input type="text"  class="form-control form-control-border" formControlName="nome" id="nome" required placeholder="Nome">
+                          
+                        </div>
+                      </div>
+                     
+                      
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="data">Data<span class="text-danger">*</span></label>
+                          <input type="date" class="form-control form-control-border" formControlName="data" id="data" required placeholder="Data">
+                        </div>
+                      </div>
+
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="data">Hora<span class="text-danger">*</span></label>
+                          <input type="time" class="form-control form-control-border" formControlName="hora" id="hora" required placeholder="Hora">
+                        </div>
+                      </div>
+                      
+                    </div>
+                    <!-- FIM PRIMEIRA DIV -->
+                   
+                    <!-- INICIO terceira DIV -->
+                    <div class="row">
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="cep">CEP</label>
+                          <input type="text" mask="00000-000" class="form-control form-control-border" formControlName="cep" id="cep" placeholder="CEP">
+                        </div>
+                      </div>
+                      
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="estado_id">Estado</label>
+                          
+                          
+                          <select class="form-control form-control-border" (change)="getCidades()" formControlName="estado_id"  id="estado_id">
+                            <option></option>
+                            <option *ngFor="let estado of estados$" [value]="estado.id">{{estado.nome}}</option>
+                              
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="cidade_id">Cidade</label>
+                          <!--<select class="form-control form-control-border" formControlName="cidade" required id="cidade">
+                            <option></option>
+                            <option *ngFor="let cidade of cidades$" [value]="cidade.id">{{cidade.nome}}</option>
+                              
+                          </select>-->
+                          <ngx-select [items]="cidades$" optionTextField="nome" style="border-top: 0; border-left: 0;" formControlName="cidade_id"  id="cidade_id"></ngx-select>
+                        </div>
+                      </div>
+                     
+                      
+                     
+                    </div>
+                    <!-- FIM terceira DIV -->
+                    <!-- INICIO quarta DIV -->
+                    <div class="row">
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="rua">Rua</label>
+                          <input type="text" class="form-control form-control-border" formControlName="rua" id="rua"  placeholder="Rua">
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="numero">Número</label>
+                          <input type="text" class="form-control form-control-border" formControlName="numero" id="numero"  placeholder="Número">
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="bairro">Bairro</label>
+                          <input type="text" class="form-control form-control-border" formControlName="bairro" id="bairro"  placeholder="Bairro">
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label for="complemento">Complemento</label>
+                          <input type="text" class="form-control form-control-border" formControlName="complemento" id="complemento" placeholder="Complemento">
+                        </div>
+                      </div>
+                      
+                     
+                    </div>
+                    <!-- FIM quarta DIV -->
+                   
+                    <!-- INICIO quinta DIV -->
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group">
+                          <label for="observacao">Observações</label>
+                          <textarea rows="5" class="col-12" formControlName="observacao" id="observacao" class="form-control form-control-border" placeholder="Observações..."></textarea>
+                        </div>
+                      </div>
+                      <div class="col-12" *ngIf="cadform.value.tipo_id == 2">
+                        <div class="form-group">
+                          <label for="previa">Prévia</label>
+                          <textarea rows="5" class="col-12" formControlName="previa" id="previa" class="form-control form-control-border" placeholder="Prévia..."></textarea>
+                        </div>
+                      </div>
+                      <div class="col-12" *ngIf="cadform.value.tipo_id == 2">
+                        <div class="form-group">
+                          <label for="sintese">Síntese</label>
+                          <textarea rows="5" class="col-12" formControlName="sintese" id="sintese" class="form-control form-control-border" placeholder="Síntese..."></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- FIM quinta DIV -->
+                  </form>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" (click)="cadform.reset()" data-dismiss="modal">Fechar</button>
+                  <button type="button" class="btn btn-primary" [disabled]="!cadform.valid" (click)="salvar()" data-dismiss="modal">Salvar</button>
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal cadastro -->
+  
+            <!-- /.modal excluir -->
+            <div class="modal fade" id="modaldel" style="display: none;" aria-hidden="true">
+              <div class="modal-dialog ">
+                <div class="modal-content" *ngIf="delete$">
+                  <div class="modal-header">
+                    <h4 class="modal-title">Excluir</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    Tem certeza que deseja excluir a manifestação <b>{{delete$.nome}}</b>?
+                  </div>
+                  <div class="modal-footer ">
+                  
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-danger" (click)="confirm(delete$.id)" data-dismiss="modal">Confirmar</button>
+                  </div>
+                </div>
+                <!-- /.modal-content -->
+              </div>
+              <!-- /.modal-dialog -->
+            </div>
+            <!-- /.fim modal excluir -->  
+            
+            
+            <!-- /.modal veiculos -->
+          <div class="modal fade" id="modalveiculos" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content" *ngIf="selected$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Veículos <button type="button" class="btn btn-block btn-outline-primary btn-flat" (click)="cadvei = 1;"><i class="fas fa-plus"></i></button></h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    
+                  <div class="callout callout-success" *ngIf="cadvei == 1">
+                    <h5>Cadastrar veículo</h5>
+                    
+                    <form [formGroup]="cadformvei">
+                      <div class="row">
+                        <div class="col-4">
+                          <div class="form-group">
+                            <label for="veiculo_id">Veículo<span class="text-danger">*</span></label>                            
+                            <ngx-select [items]="transportes$" [multiple]="true" [allowClear]="true"  optionTextField="placa" formControlName="veiculo_id"  required id="veiculo_id"></ngx-select>                        
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- FIM PRIMEIRA DIV -->
+                     
+                    </form>
+                    
+                    <button class="btn btn-primary btn-flat " [disabled]="!cadformvei.valid" (click)="cadastroveiculo()">Salvar</button>
+                    <button class="btn btn-link btn-flat " (click)="cadvei = 0">Cancelar</button> 
+                </div>      
+
+                  <div class="callout callout-danger" *ngIf="deletevei$">
+                      <h5>Excluir veículo</h5>
+                      
+                      <p>Tem certeza que deseja excluir o veículo <b>{{deletevei$.veiculo.placa}}?</b></p>
+                      
+                      <button class="btn btn-danger btn-flat " (click)="confirmveiculo(deletevei$.id)">Excluir</button>
+                      <button class="btn btn-link btn-flat " (click)="deletevei$ = ''">Cancelar</button> 
+                  </div>
+                    
+
+                    <table  class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            <th>ID</th>                        
+                            <th>MODELO / MARCA</th> 
+                            <th>PLACA</th> 
+                            <th>RENAVAM</th> 
+                            <th>CHASSI</th> 
+                            <th>COR</th> 
+                            <th>PESSOA</th> 
+                            <th>EDITAR</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="veiculos$?.length == 0">
+                          <tr>
+                            <td colspan="8" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                          </tr>
+                        </tbody>
+                        <tbody *ngIf="veiculos$?.length != 0">
+                          <tr *ngFor="let dataveiculo of veiculos$  | paginate: { itemsPerPage: itenspage, currentPage: q, id: 'lista2' }" class="hovers">
+                              <td>{{ dataveiculo.veiculo.id }}</td>
+                            
+                              <td>{{ dataveiculo.veiculo.modelo.nome }} / {{ dataveiculo.veiculo.marca.nome }}</td> 
+                              <td>{{ dataveiculo.veiculo.placa }}</td> 
+                              <td>{{ dataveiculo.veiculo.renavam }}</td> 
+                              <td>{{ dataveiculo.veiculo.chassi }}</td>   
+                              <td>{{ dataveiculo.veiculo.cor.nome }}</td>     
+                              <td><span *ngIf="dataveiculo.pessoa"><a [routerLink]="['/pessoa', dataveiculo.pessoa.id]" data-dismiss="modal">{{ dataveiculo.pessoa.nome}} ({{ dataveiculo.pessoa.cpf}})</a></span></td>      
+                              <td>  
+                                  <span class="editdata">                                    
+                                    <i (click)="deletarveiculo(dataveiculo)" class="right fas fa-trash text-danger point marg5"></i>
+                                  </span>                                                          
+                              </td>
+                          </tr>
+                        </tbody>
+                        <tfoot class="text-center" >
+                            <pagination-controls (pageChange)="q = $event" id="lista2" previousLabel="Anterior"
+                            nextLabel="Próximo"  ></pagination-controls>
+                        </tfoot>
+                      </table>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal veiculos -->
+
+          <!-- /.modal pessoas -->
+          <div class="modal fade" id="modalpessoas" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content" *ngIf="selected$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Pessoas <button type="button" class="btn btn-block btn-outline-primary btn-flat" (click)="cadpes = 1;"><i class="fas fa-plus"></i></button></h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+
+                  <div class="callout callout-success" *ngIf="cadpes == 1">
+                    <h5>Cadastrar pessoa</h5>
+                    
+                    <form [formGroup]="cadformpes">
+                      <div class="row">
+                        <div class="col-4">
+                          <div class="form-group">
+                            <label for="pessoa_id">Pessoa<span class="text-danger">*</span></label>                            
+                            <ngx-select [items]="pess$"  [allowClear]="true"  optionTextField="nome" formControlName="pessoa_id" required  id="pessoa_id">
+                              <ng-template ngx-select-option let-option let-text="text">                                           
+                                {{option.data.nome}} ({{option.data.cpf}})
+                              </ng-template>
+                            </ngx-select>                        
+                          </div>
+                        </div>
+
+                        <div class="col-2">
+                          <div class="form-group">
+                            <label for="lider">Lider</label>
+                            <input type="checkbox" style="max-width: 15px; width: 15px;" class="form-control" formControlName="lider" id="lider" >                          
+                          </div>
+                        </div>
+                        <div class="col-4">
+                          <div class="form-group">
+                            <label for="veiculo_id">Veículo</label>                            
+                            <ngx-select [items]="transportes$" [allowClear]="true"  optionTextField="placa" formControlName="veiculo_id" id="veiculo_id"></ngx-select>                        
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- FIM PRIMEIRA DIV -->
+                     
+                    </form>
+                    
+                    <button class="btn btn-primary btn-flat " [disabled]="!cadformpes.valid" (click)="cadastropessoa()">Salvar</button>
+                    <button class="btn btn-link btn-flat " (click)="cadpes = 0">Cancelar</button> 
+                </div>      
+
+                  <div class="callout callout-danger" *ngIf="deletepes$">
+                      <h5>Excluir veículo</h5>
+                      
+                      <p>Tem certeza que deseja excluir a pessoa <b>{{deletepes$.pessoa.nome}}?</b></p>
+                      
+                      <button class="btn btn-danger btn-flat " (click)="confirmpessoa(deletepes$.id)">Excluir</button>
+                      <button class="btn btn-link btn-flat " (click)="deletepes$ = ''">Cancelar</button> 
+                  </div>
+                  
+                    <table  class="table table-hover text-nowrap">
+                        <thead>
+                          <tr>
+                            <th>ID</th>                        
+                            <th>NOME</th> 
+                            <th>CPF</th> 
+                            <th>FOTO</th>     
+                            <th>LÍDER</th>     
+                            <th>EDITAR</th>                            
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="pessoas$?.length == 0">
+                          <tr>
+                            <td colspan="6" class="no-data-available" style="text-align: center;">Sem informação!</td>
+                          </tr>
+                        </tbody>
+                        <tbody *ngIf="pessoas$?.length != 0">
+                          <tr *ngFor="let datapessoa of pessoas$  | paginate: { itemsPerPage: itenspage, currentPage: q, id: 'lista2' }" class="hovers">
+                              <td>{{ datapessoa.pessoa.id }}</td>                            
+                              <td><a [routerLink]="['/pessoa', datapessoa.pessoa.id]" data-dismiss="modal">{{ datapessoa.pessoa.nome }}</a></td> 
+                              <td>{{ datapessoa.pessoa.cpf }}</td> 
+                              <td><img src="{{ path+datapessoa.pessoa.foto }}" height="80px" *ngIf="datapessoa.pessoa.foto" class="img-circle elevation-2" alt="User Image"></td> 
+                              <td><span *ngIf="datapessoa.lider">Sim</span></td> 
+                              <td>  
+                                <span class="editdata">                                    
+                                  <i (click)="deletarpessoa(datapessoa)" class="right fas fa-trash text-danger point marg5"></i>
+                                </span>                                                          
+                            </td>
+                          </tr>
+                        </tbody>
+                        <tfoot class="text-center" >
+                            <pagination-controls (pageChange)="r = $event" id="lista3" previousLabel="Anterior"
+                            nextLabel="Próximo"  ></pagination-controls>
+                        </tfoot>
+                      </table>
+                </div>
+                <div class="modal-footer ">
+                 
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal pessoas -->
+  
+          </div>
+          <!-- FIM LISTA DE USUÁRIOS -->
+  
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  
+  
+  <app-controlbar></app-controlbar>
+  <app-footer></app-footer>
+  
+  </div>
+  <!-- ./wrapper -->

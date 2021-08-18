@@ -1,0 +1,199 @@
+<div class="wrapper">
+    <app-navbar></app-navbar>
+    <app-sidebar></app-sidebar>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Acesso</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">            
+                <li class="breadcrumb-item"><a [routerLink]="['/inicio']">Início</a></li>
+                <li class="breadcrumb-item active">Acesso</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        
+        <!-- Default box -->
+      <div class="card card-orange card-outline" *ngIf="show == 0">
+        <div class="row" style="margin-bottom: 30px; margin-top: 30px;">
+          <div class="col-4">
+            
+          </div>
+          <div class="col-4">
+            <h3>Selecione o posto de serviço:</h3>
+            <select [(ngModel)]="posto" class="form-control form-control-border">                                        
+              <option value=""></option>
+              <option *ngFor="let posto of postos$" [value]="posto.id">{{posto.nome}} / {{posto.orgao.nome}}</option>
+                    
+            </select>
+            <button (click)="getPosto()" class="btn btn-primary btn-flat btn-block" style="margin-top: 30px;">Selecionar</button>
+          </div>
+          <div class="col-4">
+          </div>
+        </div>
+
+      </div>
+      
+      <!-- depois de selecionar o posto de serviço -->
+      <div class="card card-orange card-outline" *ngIf="show == 1">
+        <div class="card-header">
+          <div class="row">             
+            <div class="col-6" *ngIf="selecionado">
+              <h3 class="d-inline">Posto:</h3>
+              <h4 class="d-inline"> {{selecionado.nome}} / {{selecionado.orgao.nome}}</h4>
+            </div>
+            <div class="col-2">
+              
+            </div>
+            <div class="col-4 text-right">
+              <a class="btn btn-link" (click)="voltar()">Voltar</a>
+              {{dayName[date.getDay() ] + ", " + date.getDate () + " de " + monName [date.getMonth() ]   +  " de "  +     date.getFullYear ()}}
+            </div>
+          </div>
+          
+        </div>
+        <div class="card-body">
+          <div class="row">             
+            <div class="col-3">
+              <div class="form-group">
+                <label for="pessoa">Pessoa<span class="text-danger">*</span></label>
+                <!--<select class="form-control form-control-border" formControlName="cidade" required id="cidade">
+                  <option></option>
+                  <option *ngFor="let cidade of cidades$" [value]="cidade.id">{{cidade.nome}}</option>
+                    
+                </select>-->
+                <ngx-select [items]="usuarios$" [(ngModel)]="user_id" [allowClear]="true" (remove)="getUsuario()" optionTextField="nome" (select)="getUsuario()"  style="border-top: 0; border-left: 0;" required id="user_id">
+                  <ng-template ngx-select-option let-option let-text="text">                                           
+                    {{option.data.nome}} ({{option.data.cpf}})
+                  </ng-template>
+                </ngx-select>
+              </div>
+            </div>
+            <div class="col-9" *ngIf="!data$" style="text-align: center;">
+              <h2>Posicione o dedo para leitura da digital!</h2>
+              <i class="fas fa-fingerprint text-primary" style="font-size: 150px;"></i>
+            </div>
+            <div class="col-9" *ngIf="data$">
+
+              <div class="card card-widget widget-user">
+                <!-- Add the bg color to the header using any of the bg-* classes -->
+                <div class="widget-user-header bg-olive">
+                 
+                  <h3 class="widget-user-username">{{data$.nome}}</h3>
+                  <h5 class="widget-user-desc">{{data$.funcao.nome}} / {{data$.setor.nome}} / {{data$.orgao.nome}}</h5>
+                </div>
+                <div class="widget-user-image">
+                  <img class="img-circle elevation-2" *ngIf="foto" src="{{path+foto}}"  alt="User Avatar" style="max-width: 90px; max-height: 90px;">
+                  <img class="img-circle elevation-2" *ngIf="!foto" src="{{path+'cm.jpg'}}" alt="User Avatar" style="max-width: 90px; max-height: 90px;">
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-4">
+                      <dl class="row">
+                        <dt class="col-sm-4">Posto/grad.:</dt><dd class="col-sm-8">{{data$.posto_grad.nome}}</dd>
+                        <dt class="col-sm-4">CPF:</dt><dd class="col-sm-8">{{data$.cpf}}</dd>
+                        <dt class="col-sm-4">Data nascimento:</dt><dd class="col-sm-8">{{data$.data_nascimento | date:'dd/MM/yyyy'}}</dd>
+                        <dt class="col-sm-4">Telefone 1:</dt><dd class="col-sm-8">{{data$.telefone1}}</dd>
+                        <dt class="col-sm-4">E-mail:</dt><dd class="col-sm-8">{{data$.email}}</dd>
+                        <dt class="col-sm-4">Endereço:</dt><dd class="col-sm-8">{{data$.rua}}, {{data$.numero}}, {{data$.complemento}}, {{data$.bairro}}, <span *ngIf="data$.cidade">{{data$.cidade.nome}}</span> <span *ngIf="data$.estado"> - {{data$.estado.uf}}</span></dd>
+                        
+                      </dl>
+                    </div>
+                    <div class="col-8">
+                      <h4>Próximos eventos</h4>
+                      <div class="callout callout-info" *ngFor="let evento of eventos$">
+                        <div class="row">
+                          <div class="col-12">
+                            <h5><b>{{evento.eventotipo.nome}}:</b> {{evento.nome}}</h5>
+                          </div>
+                          <div class="col-12">
+                            <div class="row">
+                              <div class="col-4">
+                                <b>Data:</b> {{evento.data | date:'dd/MM/yyyy'}} <b>Hora:</b> {{evento.hora}}
+                              </div>
+                              <div class="col-4">
+                                <b>Setor / Gorgão:</b> {{evento.setor.nome}} / {{evento.orgao.nome}}
+                              </div>
+                              <div class="col-4">
+                                <b>Cidade - UF:</b> {{evento.cidade.nome}} - {{evento.estado.uf}}
+                              </div> 
+                            </div>
+                               
+                          </div>
+                          <div class="col-6" *ngIf="evento.usuarios">
+                            <dl>
+                              <dt>Participantes:</dt>
+                              <dd *ngFor="let participante of evento.usuarios">
+                                {{participante.nome}}
+                              </dd>
+                            </dl>
+                          </div>
+                          <div class="col-6" *ngIf="evento.veiculos">
+                            <dl>
+                              <dt>Veículos:</dt>
+                              <dd *ngFor="let veiculo of evento.veiculos">
+                                Modelo / Marca: {{veiculo.modelo.nome}} / {{veiculo.marca.nome}}, Placa:{{veiculo.placa}}
+                              </dd>
+                            </dl>
+                          </div>
+                          <div class="col-12" *bgIf="evento.observacao">
+                            <p><b>Observações:</b></p>
+                            <p>{{evento.observacao}}</p>
+                            
+                          </div>
+                        </div>
+                        
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button class="btn btn-primary btn-clock btn-flat col-12" *ngIf="registrado == 0 && data$.acesso == 1 && permissao == 1"  (click)="registrar()">Registrar acesso</button>
+                  <div class="alert alert-danger alert-dismissible" *ngIf="data$.acesso == 0">                    
+                    <h5><i class="icon fas fa-ban"></i> Acesso bloqueado!</h5>
+                    O acesso do(a) Sr(a). {{data$.nome}} está temporariamente bloqueado.
+                  </div>
+                  <div class="alert alert-warning alert-dismissible" *ngIf="permissao == 0 && data$.acesso == 1">                    
+                    <h5><i class="icon fas fa-exclamation-triangle"></i> Área restrita!</h5>
+                    O Sr(a). {{data$.nome}} não possui permissão de acesso a essa área.
+                  </div>
+                  <div class="alert alert-success alert-dismissible" *ngIf="registrado == 1 ">                    
+                    <h5><i class="icon fas fa-check"></i> Acesso registrado!</h5>
+                    Acesso do(a) Sr(a). {{data$.nome}} registrado com sucesso.
+                  </div>
+                </div>
+              </div>
+              
+            </div>          
+          </div>          
+        </div>
+        
+
+      </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  
+  <app-controlbar></app-controlbar>
+  <app-footer></app-footer>
+  
+</div>
+<!-- ./wrapper -->

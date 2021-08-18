@@ -1,0 +1,60 @@
+<div class="login-page">
+  <div class="login-box  ">
+      <div class="login-logo">
+        <img src="{{logo}}" height="120px">
+      </div>
+      <!-- /.login-logo -->
+      <div class="card card-outline card-olive">
+        <div class="card-header text-center">
+          <h2>Casa Militar</h2>
+        </div>
+        <div class="card-body">
+          <p class="login-box-msg">Informe login e senha para entrar</p>
+
+          <form [formGroup]="cadform">
+            <div class="input-group mb-3">
+              <input type="text" autofocus class="form-control" mask="000.000.000-00" formControlName="usuario" required  placeholder="CPF">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-user"></span>
+                </div>
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <input type="password" class="form-control" formControlName="password" minlength="6" required placeholder="Senha">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="icheck-olive">
+                  <input type="checkbox" id="remember" formControlName="remember">
+                  <label for="remember" >
+                    Lembrar-Me
+                  </label>
+                </div>
+              </div>
+              <!-- /.col -->
+              <div class="col-6">
+                <a href="forgot-password.html">Esqueci minha senha</a>
+              </div>
+              <!-- /.col -->
+              <div class="col-12" style="margin-top: 15px;">
+                <button [disabled]="!cadform.valid" (click)="doLogin()" class="btn btn-success btn-block">Entrar</button>
+              </div>
+            </div>
+          </form>
+          <!-- /.social-auth-links -->
+
+            
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- /.login-box -->
+    <p style="text-align: center;">V. 1.0.0</p>
+</div>
