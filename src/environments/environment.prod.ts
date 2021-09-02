@@ -1,8 +1,8 @@
 export const environment = {
   production: true,
-  url: 'https://hapi.casacivil.ce.gov.br/controle-acesso/public/api/auth/',
-  img: 'https://hapi.casacivil.ce.gov.br/controle-acesso/public/imagens/',
-  arq: 'https://hapi.casacivil.ce.gov.br/controle-acesso/public/arquivos/'
+  url: 'https://hsistemas.casacivil.ce.gov.br/controle-acesso/apicasamilitar/public/api/auth/',
+  img: 'https://hsistemas.casacivil.ce.gov.br/controle-acesso/apicasamilitar/public/imagens/',
+  arq: 'https://hsistemas.casacivil.ce.gov.br/controle-acesso/apicasamilitar/public/arquivos/'
 };
 //https://hapi.casacivil.ce.gov.br/controle-acesso
 //http://localhost:8080/apicasamilitar
