@@ -96,18 +96,20 @@
                         <span *ngIf="data.manifestacao_tipo">{{ data.manifestacao_tipo.nome }}</span>
                       </td>       
                       <td>
-                        <!--<button type="button" (click)="getPessoas(data)"  data-toggle="modal" data-target="#modalpessoas" class="btn btn-sm btn-outline-info  btn-flat"> Pessoas <span class="badge bg-danger">{{data.pessoas.length}}</span></button>          -->
+                        <a data-toggle="modal" data-target="#modalpessoas" (click)="getPessoas(data)"  class="btn btn-block btn-primary btn-xs btn-flat">Pessoas</a>    
+                        <!--<button type="button" (click)="getPessoas(data)"  data-toggle="modal" data-target="#modalpessoas" class="btn btn-sm btn-outline-info  btn-flat"> Pessoas <span class="badge bg-danger">{{data.pessoas.length}}</span></button>          
                         <a class="btn btn-app bg-info" (click)="getPessoas(data)" data-toggle="modal" data-target="#modalpessoas">
                             <span class="badge bg-danger">{{data.pessoas.length}}</span>
                             <i class="fas fa-users"></i> Pessoas
-                          </a>
+                          </a>-->
                       </td>
                       <td>
-                        <!--<button type="button" (click)="getVeiculos(data)"  data-toggle="modal" data-target="#modalveiculos" class="btn btn-sm btn-outline-info  btn-flat"> Veículos <span class="badge bg-danger">{{data.veiculos.length}}</span></button>          -->
+                        <a data-toggle="modal" data-target="#modalveiculos" (click)="getVeiculos(data)"  class="btn btn-block btn-primary btn-xs btn-flat">Veículos</a>    
+                        <!--<button type="button" (click)="getVeiculos(data)"  data-toggle="modal" data-target="#modalveiculos" class="btn btn-sm btn-outline-info  btn-flat"> Veículos <span class="badge bg-danger">{{data.veiculos.length}}</span></button>          
                         <a class="btn btn-app bg-info" (click)="getVeiculos(data)" data-toggle="modal" data-target="#modalveiculos">
                             <span class="badge bg-danger">{{data.veiculos.length}}</span>
                             <i class="fas fa-car"></i> Veículos
-                          </a>
+                          </a>-->
                       </td>    
                       <td>
                         <span *ngIf="data.tipo_id == 2">

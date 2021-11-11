@@ -17,6 +17,13 @@ import {SetoresService} from '../../services/setores.service';
 import {PostogradService} from '../../services/postograd.service';
 import {NiveisService} from '../../services/niveis.service';
 
+import {MarcasService} from '../../services/marcas.service';
+import {ModelosService} from '../../services/modelos.service';
+import {VeiculosTiposService} from '../../services/veiculos-tipos.service';
+import {CoresService} from '../../services/cores.service';
+
+import {UsuariosVeiculosService} from '../../services/usuarios-veiculos.service';
+
 @Component({
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
@@ -30,6 +37,9 @@ export class UsuariosComponent implements OnInit {
   filedata: any;
   user$: any;
   path = environment.img;
+
+  cadvei = 0;
+  userid = 0;
 
   data$: any;
   temp$: any;
@@ -48,6 +58,13 @@ export class UsuariosComponent implements OnInit {
   postograd$: any;
   perfil$: any;
   niveis$: any;
+
+  veiculos$: any;
+
+  veiculostipos$: any;
+  marcas$: any;
+  modelos$: any;
+  cores$: any;
 
   cadform = new FormGroup({
     id: new FormControl(),
@@ -85,6 +102,16 @@ export class UsuariosComponent implements OnInit {
     foto: new FormControl()
   });
 
+  cadformveiculo = new FormGroup({
+    id: new FormControl(),
+    user_id: new FormControl(),
+    marca_id: new FormControl(),
+    modelo_id: new FormControl(),
+    veiculo_tipo_id: new FormControl(),
+    placa: new FormControl(),
+    cor_id: new FormControl()
+  });
+
   constructor(private toastr: ToastrService,
     private http: HttpClient,
       private session: SessionService,  
@@ -97,6 +124,13 @@ export class UsuariosComponent implements OnInit {
       private postograd: PostogradService,
       private niveis: NiveisService,
       private enderecos: EnderecosService,
+
+      private marcas: MarcasService,
+      private modelos: ModelosService,
+      private veiculostipos: VeiculosTiposService,
+      private cores: CoresService,
+      private usuariosveiculos: UsuariosVeiculosService,
+
       private router: Router) { 
    
   }
@@ -381,9 +415,60 @@ export class UsuariosComponent implements OnInit {
     })
   }
 
-  
+  veiculos(data: any){
+    this.userid = 0;
+    this.veiculos$ = data.veiculos;
+    this.userid = data.id;
 
+    this.marcas.index().subscribe(data => {
+      this.marcas$ = data;
+    });
 
+    this.cores.index().subscribe(data => {
+      this.cores$ = data;
+    });
 
+    this.veiculostipos.index().subscribe(data => {
+      this.veiculostipos$ = data;
+    });
+  }
+
+  getModelos(){
+    this.modelos.where(this.cadformveiculo.value.marca_id).subscribe(data => {
+      this.modelos$ = data;
+    });
+  }
+
+  confirmvei(){
+    this.cadformveiculo.controls.user_id.patchValue(this.userid);
+    this.usuariosveiculos.post(this.cadformveiculo.value).subscribe(data => {
+      if(data == 1){
+        this.showToast('Cadastro realizado!','Veículo cadastrado com sucesso.',1);
+        this.cadformveiculo.reset();
+        this.getData();
+        this.usuarios.find(this.userid).subscribe(data => {
+          //@ts-ignore
+          this.veiculos$ = data.veiculos;
+        });
+      }else{
+        this.showToast('Erro!','Erro ao cadastrar, tento novamente mais tarde!',2);
+      }
+    });
+  }
+
+  deletevei(id: number){
+    this.usuariosveiculos.delete(id).subscribe(data => {
+      if(data == 1){
+        this.getData();
+        this.showToast('Exclusão realizada!','Veículo excluido com sucesso.',1);
+        this.usuarios.find(this.userid).subscribe(data => {
+          //@ts-ignore
+          this.veiculos$ = data.veiculos;
+        });
+      }else{
+        this.showToast('Erro!','Erro ao excluir, tento novamente mais tarde!',2);
+      }
+    });
+  }
 
 }

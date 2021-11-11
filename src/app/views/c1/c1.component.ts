@@ -44,7 +44,7 @@ export class C1Component implements OnInit {
       var val = this.textfilter.toLowerCase();     
 
       const temp = this.data$.filter((d: any) => {
-        return d.nome.toLowerCase().indexOf(val) !== -1 || d.cpf.toLowerCase().indexOf(val) !== -1 || !val;
+        return d.nome.toLowerCase().indexOf(val) !== -1 || d.cpf.toLowerCase().indexOf(val) !== -1  || !val;
       });
 
       this.data$ = temp;

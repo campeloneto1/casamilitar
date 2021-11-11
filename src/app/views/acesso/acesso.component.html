@@ -105,7 +105,7 @@
                       <dl class="row">
                         <dt class="col-sm-4">Posto/grad.:</dt><dd class="col-sm-8">{{data$.posto_grad.nome}}</dd>
                         <dt class="col-sm-4">CPF:</dt><dd class="col-sm-8">{{data$.cpf}}</dd>
-                        <dt class="col-sm-4">Data nascimento:</dt><dd class="col-sm-8">{{data$.data_nascimento | date:'dd/MM/yyyy'}}</dd>
+                        <dt class="col-sm-4">Data nasc.:</dt><dd class="col-sm-8">{{data$.data_nascimento | date:'dd/MM/yyyy'}}</dd>
                         <dt class="col-sm-4">Telefone 1:</dt><dd class="col-sm-8">{{data$.telefone1}}</dd>
                         <dt class="col-sm-4">E-mail:</dt><dd class="col-sm-8">{{data$.email}}</dd>
                         <dt class="col-sm-4">Endereço:</dt><dd class="col-sm-8">{{data$.rua}}, {{data$.numero}}, {{data$.complemento}}, {{data$.bairro}}, <span *ngIf="data$.cidade">{{data$.cidade.nome}}</span> <span *ngIf="data$.estado"> - {{data$.estado.uf}}</span></dd>

@@ -65,10 +65,10 @@
                         <img src="{{path+'cm.jpg'}}" *ngIf="!data.foto" alt="user-avatar" width="120px" height="120px" class="img-circle img-fluid">
                       </div>
                       <div class="col-12">
-                        <h2 class="lead"><b>{{data.nome}} <span *ngIf="data.nome_guerra">({{data.nome_guerra}})</span></b></h2>
-                        <h3 class="lead">{{data.funcao.nome}} </h3>
-                        <h3 class="lead">{{data.setor.nome}} / {{data.orgao.nome}}</h3>
-                        <!--<p class="text-muted text-sm"><b>About: </b> Web Designer / UX / Graphic Artist / Coffee Lover </p>-->
+                        <h2 class="lead"><b>{{data.nome}}</b></h2>
+                        <h3 class="lead">{{data.nome_guerra}}</h3>
+                        
+                        <p class="text-muted text-sm">{{data.funcao.nome}} - {{data.setor.nome}} / {{data.orgao.nome}} </p>
                         <ul class="ml-4 mb-0 fa-ul text-muted">
                           <li class="small"><span class="fa-li"><i class="fas fa-lg fa-home"></i></span> Endereço: {{data.rua}}, {{data.numero}}, {{data.complemento}}, {{data.bairro}}, <span *ngIf="data.cidade">{{data.cidade.nome}}</span> <span *ngIf="data.estado"> - {{data.estado.uf}}</span></li>
                           <li class="small">

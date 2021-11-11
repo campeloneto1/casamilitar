@@ -70,7 +70,7 @@
                     <th>ID</th>
                     <th>NOME</th>
                     <th>CPF</th>
-                    <th>POSTO/GRAD.</th>
+                    <!--<th>POSTO/GRAD.</th>-->
                     <th>USUÁRIO</th>
                     <th>SETOR / ORGÃO</th>
                     <th>FUNÇÃO</th>
@@ -79,6 +79,7 @@
                     <th>DIGITAL</th>
                     <th>FOTO</th>
                     <th>ACESSO</th>
+                    <th>VEÍCULOS</th>
                     <th>EDITAR</th>
                   </tr>
                 </thead>
@@ -92,7 +93,7 @@
                     <td>{{ data.id }}</td>
                     <td>{{ data.nome }}</td>
                     <td>{{ data.cpf }}</td>
-                    <td>{{ data.posto_grad.nome }}</td>
+                    <!--<td>{{ data.posto_grad.nome }}</td>-->
                     <td>{{ data.usuario }}</td>
                     <td>{{ data.setor.nome }} / {{ data.orgao.nome }}</td>
                     <td>{{ data.funcao.nome }}</td>
@@ -111,6 +112,10 @@
                         <input type="checkbox" [checked]="data.acesso == 1" (change)="changeAcesso(data)" class="custom-control-input"  id="{{ data.id }}">
                         <label class="custom-control-label" for="{{ data.id }}"></label>
                       </div>
+                      
+                    </td>
+                    <td>
+                      <button data-toggle="modal" data-target="#modalveiculos" *ngIf="(perfil$.users_edit  && data.orgao_id == user$.orgao_id) || perfil$.administrador" (click)="veiculos(data)" type="button" class="btn btn-block btn-primary btn-xs btn-flat">Veículos</button>
                       
                     </td>
                     <td>  
@@ -472,6 +477,124 @@
             <!-- /.modal-dialog -->
           </div>
           <!-- /.fim modal foto -->
+
+
+          <!-- /.modal veiculos -->
+          <div class="modal fade" id="modalveiculos" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content" *ngIf="veiculos$">
+                <div class="modal-header">
+                  <h4 class="modal-title">Cadastro de veículos</h4> 
+                  <button type="button" (click)="cadvei = 1;"  class="btn btn-outline-primary btn-flat marg5" ><i class="fas fa-plus"></i></button>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body " >                
+                  <form [formGroup]="cadformveiculo" *ngIf="cadvei == 1">
+                    <!-- inicio primeira DIV -->
+                    <div class="row">
+                        
+                      <div class="col-2">
+                        <div class="form-group">
+                            <label for="veiculo_tipo_id">Tipo de Veículo<span class="text-danger">*</span></label>
+                            <select class="form-control form-control-border" formControlName="veiculo_tipo_id" required id="veiculo_tipo_id">
+                                <option></option>
+                                <option *ngFor="let veiculotipo of veiculostipos$" [value]="veiculotipo.id">{{veiculotipo.nome}}</option>                                
+                            </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                            <label for="marca_id">Marca<span class="text-danger">*</span></label>
+                            <select class="form-control form-control-border" (change)="getModelos()" formControlName="marca_id" required id="marca_id">
+                                <option></option>
+                                <option *ngFor="let marca of marcas$" [value]="marca.id">{{marca.nome}}</option>                                
+                            </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                            <label for="modelo_id">Modelo<span class="text-danger">*</span></label>
+                            <select class="form-control form-control-border" formControlName="modelo_id" required id="modelo_id">
+                                <option></option>
+                                <option *ngFor="let modelo of modelos$" [value]="modelo.id">{{modelo.nome}}</option>                                
+                            </select>
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                            <label for="cor_id">Cor<span class="text-danger">*</span></label>
+                            <select class="form-control form-control-border" formControlName="cor_id" required id="cor_id">
+                                <option></option>
+                                <option *ngFor="let cor of cores$" [value]="cor.id">{{cor.nome}}</option>                                
+                            </select>
+                        </div>
+                      </div>
+                    
+                        <div class="col-2">
+                            <div class="form-group">
+                              <label for="placa">Placa<span class="text-danger">*</span></label>
+                              <input type="text" minlength="7" maxlength="7" class="form-control form-control-border" formControlName="placa" id="placa" required >
+                            </div>
+                        </div>
+                      <div class="col-2">
+                        <button type="button" class="btn btn-primary btn-flat" (click)="confirmvei()" [disabled]="!cadformveiculo.valid" >Salvar</button>
+                      </div>
+                        
+                        
+
+                    </div>
+                    <!-- FIM segunda DIV -->
+                    
+                   
+                   
+                  </form>
+
+                  <table  class="table table-hover text-nowrap">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>MARCA</th>
+                        <th>MODELO</th>
+                        <th>COR</th>
+                        <th>PLACA</th>
+                        <th>EDITAR</th>
+                      </tr>
+                    </thead>                    
+                    <tbody *ngIf="veiculos$?.length != 0">
+                      <tr *ngFor="let data of veiculos$" class="hovers">
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.marca.nome }}</td>
+                        <td>{{ data.modelo.nome }}</td>
+                        
+                        <td>{{ data.cor.nome }}</td>
+                        <td>{{ data.placa }} </td>                        
+                        <td>  
+                          <span class="editdata">                            
+                            <i class="right fas fa-trash text-danger point marg5" (click)="deletevei(data.id)"></i>
+                          </span>                                                          
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      
+                    </tfoot>
+                  </table>
+
+
+                </div>
+                <div class="modal-footer ">
+                
+                  <button type="button" class="btn btn-link" data-dismiss="modal">Fechar</button>
+                  
+                </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.fim modal veiculos -->
 
         </div>
         <!-- FIM LISTA DE USUÁRIOS -->

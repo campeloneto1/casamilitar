@@ -6,6 +6,7 @@ import {InicioComponent} from '../app/views/inicio/inicio.component';
 import {C1Component} from '../app/views/c1/c1.component';
 import {UsuariosComponent} from '../app/views/usuarios/usuarios.component';
 import {AcessoComponent} from '../app/views/acesso/acesso.component';
+import {GaragemComponent} from '../app/views/garagem/garagem.component';
 import {SetoresComponent} from '../app/views/setores/setores.component';
 import {OrgaosComponent} from '../app/views/orgaos/orgaos.component';
 import {PerfisComponent} from '../app/views/perfis/perfis.component';
@@ -71,6 +72,11 @@ const routes: Routes = [
     path: 'acessos',
     canActivate: [AuthGuard],
     component: AcessosComponent
+  },
+  {
+    path: 'garagem',
+    canActivate: [AuthGuard],
+    component: GaragemComponent
   },
   {
     path: 'cidades',

@@ -92,22 +92,22 @@
                         <td>{{ data.data | date:'dd/MM/yyyy'}}</td>    
                         <td>{{ data.hora }}</td>   
                         <td>
-                          
-                          <a class="btn btn-app bg-info" *ngIf="perfil$.eventos_usu" (click)="getUsuarios(data)" data-toggle="modal" data-target="#modalpessoas">
+                          <button data-toggle="modal" data-target="#modalpessoas" *ngIf="perfil$.eventos_usu" (click)="getUsuarios(data)" type="button" class="btn btn-block btn-primary btn-xs btn-flat">Pessoas</button>
+                          <!--<a class="btn btn-app bg-info" *ngIf="perfil$.eventos_usu" (click)="getUsuarios(data)" data-toggle="modal" data-target="#modalpessoas">
                             <span class="badge bg-danger">{{data.usuarios.length}}</span>
                             <i class="fas fa-users"></i> Pessoas
                           </a>
-                          <!--<ul class="list-inline">
+                          <ul class="list-inline">
                             <li class="list-inline-item" *ngFor="let usu of data.usuarios">{{usu.nome}} /</li>
                           </ul>-->
                         </td>   
                         <td>
-                          
-                          <a class="btn btn-app bg-info" *ngIf="perfil$.eventos_vei" (click)="getViaturas(data)" data-toggle="modal" data-target="#modalveiculos">
+                          <button data-toggle="modal" data-target="#modalveiculos" *ngIf="perfil$.eventos_vei" (click)="getViaturas(data)" type="button" class="btn btn-block btn-primary btn-xs btn-flat">Viaturas</button>
+                         <!-- <a class="btn btn-app bg-info" *ngIf="perfil$.eventos_vei" (click)="getViaturas(data)" data-toggle="modal" data-target="#modalveiculos">
                             <span class="badge bg-danger">{{data.viaturas.length}}</span>
                             <i class="fas fa-car"></i> Viaturas
                           </a>
-                          <!--<ul class="list-inline">
+                          <ul class="list-inline">
                             <li class="list-inline-item" *ngFor="let usu of data.usuarios">{{usu.nome}} /</li>
                           </ul>-->
                         </td>             

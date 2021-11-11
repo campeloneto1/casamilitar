@@ -51,6 +51,15 @@
             </a>
           </li> 
           <li class="nav-item">
+            <a [routerLink]="['/garagem']" [routerLinkActive]="['active']" *ngIf="user.perfil.acesso" class="nav-link ">
+              <i class="nav-icon fas fa-university"></i>
+              <p>
+                Garagem
+                <!--<span class="right badge badge-danger">New</span>-->
+              </p>
+            </a>
+          </li> 
+          <li class="nav-item">
             <a [routerLink]="['/usuarios']" [routerLinkActive]="['active']" *ngIf="user.perfil.users" class="nav-link ">
               <i class="nav-icon fas fa-users"></i>
               <p>
