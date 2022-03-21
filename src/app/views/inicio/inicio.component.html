@@ -36,7 +36,7 @@
                 <table class="table table-striped table-valign-middle">
                   <thead>
                   <tr>
-                    <th>Usuário</th>
+                    <th>Funcionário</th>
                     <th>Posto / Orgão</th>
                     <th>Data</th>
                     <th>Hora</th>
@@ -112,6 +112,47 @@
           </div>-->
           <!-- /.col-4 -->
 
+        </div>
+        <!-- /.row -->
+        <!-- /.row -->
+        <div class="row">
+          <!-- /.col-4 -->
+          <div class="col-12" *ngIf="user.perfil.gestor">
+            <div class="card card-orange card-outline">
+              <div class="card-header">
+                <h5 class="m-0">Garagem acessos</h5>
+              </div>
+              <div class="card-body table-responsive p-0">
+                <table class="table table-striped table-valign-middle">
+                  <thead>
+                  <tr>
+                    <th>Funcionário</th>
+                    <th>Veículo</th>
+                    <th>Placa</th>
+                    <th>Posto / Orgão</th>
+                    <th>Data</th>
+                    <th>Hora</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let gagace of garagemacessos$ ">
+                      <td>{{gagace.user[0].nome}}</td>
+                      <td>{{gagace.veiculo.placa}}</td>
+                      <td>{{gagace.veiculo.marca.nome}} - {{gagace.veiculo.modelo.nome}}</td>
+                      <td>{{gagace.posto.nome}} / {{gagace.posto.orgao.nome}}</td>
+                      <td>{{gagace.data | date:'dd/MM/yyyy'}}</td>
+                      <td>{{gagace.hora}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+              </div>
+              <div class="card-footer">
+                <a [routerLink]="['/acessos-garagem']" class="btn btn-primary btn-flat btn-block">Ver mais</a>
+              </div>
+            </div>
+          </div>
+          <!-- /.col-4 -->
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->

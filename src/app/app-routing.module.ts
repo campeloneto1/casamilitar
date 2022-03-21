@@ -11,6 +11,7 @@ import {SetoresComponent} from '../app/views/setores/setores.component';
 import {OrgaosComponent} from '../app/views/orgaos/orgaos.component';
 import {PerfisComponent} from '../app/views/perfis/perfis.component';
 import {AcessosComponent} from '../app/views/acessos/acessos.component';
+import {AcessosGaragemComponent} from '../app/views/acessos-garagem/acessos-garagem.component';
 import {FuncoesComponent} from '../app/views/funcoes/funcoes.component';
 import {PostosComponent} from '../app/views/postos/postos.component';
 import {LogsComponent} from '../app/views/logs/logs.component';
@@ -72,6 +73,11 @@ const routes: Routes = [
     path: 'acessos',
     canActivate: [AuthGuard],
     component: AcessosComponent
+  },
+  {
+    path: 'acessos-garagem',
+    canActivate: [AuthGuard],
+    component: AcessosGaragemComponent
   },
   {
     path: 'garagem',

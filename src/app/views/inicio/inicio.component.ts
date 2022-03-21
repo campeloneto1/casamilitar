@@ -17,6 +17,7 @@ import {SessionService} from '../../services/session.service';
 export class InicioComponent implements OnInit {
 
   ultimosacessos$: any;
+  garagemacessos$: any;
   proximoseventos$: any;
   user: any;
   quantpes = 0;
@@ -29,6 +30,10 @@ export class InicioComponent implements OnInit {
 
     this.inicio.ultimosacessos().subscribe(data => {
       this.ultimosacessos$ = data;
+    });
+
+    this.inicio.garagemacessos().subscribe(data => {
+      this.garagemacessos$ = data;
     });
 
     this.inicio.proximoseventos().subscribe(data => {

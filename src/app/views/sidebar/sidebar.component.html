@@ -89,7 +89,7 @@
             </a>
           </li>  --> 
 
-          <li class="nav-item"  *ngIf="user.perfil.relatorios" (mouseenter)="menu1 = true;"  (mouseleave)="menu1 = false;" [ngClass]="{'menu-is-opening menu-open': menu1 == true}">
+          <li class="nav-item"  *ngIf="user.perfil.relatorios" (click)="menu1 = !menu1;"   [ngClass]="{'menu-is-opening menu-open': menu1 == true}">
             <a  class="nav-link clicktree" >
               <i class="nav-icon fas fa-newspaper"></i>
               <p>
@@ -120,7 +120,7 @@
             </ul>
           </li>
 
-          <li class="nav-item" *ngIf="user.perfil.administrador" (mouseenter)="menu2 = true;"  (mouseleave)="menu2 = false;"  [ngClass]="{'menu-is-opening menu-open': menu2 == true}">
+          <li class="nav-item" *ngIf="user.perfil.administrador" (click)="menu2 = !menu2;"  [ngClass]="{'menu-is-opening menu-open': menu2 == true}">
             <a  class="nav-link clicktree">
               <i class="nav-icon fas fa-cog"></i>
               <p>
@@ -230,7 +230,7 @@
               
             </ul>
           </li>  
-          <li class="nav-item" *ngIf="user.perfil.gestor" (mouseenter)="menu3 = true;"  (mouseleave)="menu3 = false;"  [ngClass]="{'menu-is-opening menu-open': menu3 == true}">
+          <li class="nav-item" *ngIf="user.perfil.gestor" (click)="menu3 = !menu3;"  [ngClass]="{'menu-is-opening menu-open': menu3 == true}">
             <a  class="nav-link clicktree">
               <i class="nav-icon fas fa-cogs"></i>
               <p>
@@ -271,7 +271,7 @@
               
             </ul>
           </li>
-          <li class="nav-item" *ngIf="user.perfil.estrategico" (mouseenter)="menu4 = true;"  (mouseleave)="menu4 = false;"  [ngClass]="{'menu-is-opening menu-open': menu4 == true}">
+          <li class="nav-item" *ngIf="user.perfil.estrategico" (click)="menu4 = !menu4;"  [ngClass]="{'menu-is-opening menu-open': menu4 == true}">
             <a  class="nav-link clicktree">
               <i class="nav-icon fas fa-user-secret"></i>
               <p>

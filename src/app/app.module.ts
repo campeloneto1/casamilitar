@@ -63,6 +63,7 @@ import { VeiculoComponent } from './views/veiculo/veiculo.component';
 import { EstconsultaComponent } from './views/estconsulta/estconsulta.component';
 import { SafePipe } from './safe.pipe';
 import { GaragemComponent } from './views/garagem/garagem.component';
+import { AcessosGaragemComponent } from './views/acessos-garagem/acessos-garagem.component';
 
 const maskConfig: Partial<IConfig> = {
   validation: false,
@@ -116,7 +117,8 @@ const maskConfig: Partial<IConfig> = {
     VeiculoComponent,
     EstconsultaComponent,
     SafePipe,
-    GaragemComponent
+    GaragemComponent,
+    AcessosGaragemComponent
   ],
   imports: [
     BrowserModule,

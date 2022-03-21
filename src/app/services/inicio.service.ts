@@ -17,6 +17,10 @@ export class InicioService {
     return this.http.get(environment.url+"home-ultimos-acessos");
   }
 
+  garagemacessos(){
+    return this.http.get(environment.url+"home-garagem-acessos");
+  }
+
   proximoseventos(){
     return this.http.get(environment.url+"home-proximos-eventos");
   }

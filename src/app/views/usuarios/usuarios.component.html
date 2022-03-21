@@ -71,9 +71,9 @@
                     <th>NOME</th>
                     <th>CPF</th>
                     <!--<th>POSTO/GRAD.</th>-->
-                    <th>USUÁRIO</th>
+                    <!--<th>USUÁRIO</th>-->
                     <th>SETOR / ORGÃO</th>
-                    <th>FUNÇÃO</th>
+                    <!--<th>FUNÇÃO</th>-->
                     <th *ngIf="perfil$.gestor">PERFIL</th>
                     <th *ngIf="perfil$.gestor">NÍVEL DE ACESSO</th>
                     <th>DIGITAL</th>
@@ -94,9 +94,9 @@
                     <td>{{ data.nome }}</td>
                     <td>{{ data.cpf }}</td>
                     <!--<td>{{ data.posto_grad.nome }}</td>-->
-                    <td>{{ data.usuario }}</td>
+                    <!--<td>{{ data.usuario }}</td>-->
                     <td>{{ data.setor.nome }} / {{ data.orgao.nome }}</td>
-                    <td>{{ data.funcao.nome }}</td>
+                    <!--<td>{{ data.funcao.nome }}</td>-->
                     <td *ngIf="perfil$.gestor">{{ data.perfil.nome }}</td>
                     <td *ngIf="perfil$.gestor">{{ data.nivel.nome }}</td>
                     <td >

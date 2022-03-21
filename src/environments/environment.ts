@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  url: 'http://localhost:8080/apicasamilitar/public/api/auth/',
-  img: 'http://localhost:8080/apicasamilitar/public/imagens/',
-  arq: 'http://localhost:8080/apicasamilitar/public/arquivos/'
+  url: 'http://10.9.235.245:8080/apicasamilitar/public/api/auth/',
+  img: 'http://10.9.235.245:8080/apicasamilitar/public/imagens/',
+  arq: 'http://10.9.235.245:8080/apicasamilitar/public/arquivos/'
 };
 
 /*

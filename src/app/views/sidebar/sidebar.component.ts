@@ -31,12 +31,7 @@ export class SidebarComponent implements OnInit {
   tree1(){
     //console.log('aaaaaaaa');
     //$('[data-widget="treeview"]').Treeview('trigger');
-    if(this.menu1){
-      this.menu1 = false;
-    }else{
-      this.menu1 = true;
-    }
-    
+    this.menu1 = !this.menu1;
   }
 
   tree2(){

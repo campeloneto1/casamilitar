@@ -7,6 +7,8 @@ import {SessionService} from '../../services/session.service';
 import {UsuariosService} from '../../services/usuarios.service';
 import {UsuariosVeiculosService} from '../../services/usuarios-veiculos.service';
 import {PostosService} from '../../services/postos.service';
+import {GaragemService} from '../../services/garagem.service';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
 @Component({
@@ -36,6 +38,7 @@ export class GaragemComponent implements OnInit {
     private toastr: ToastrService,
     private session: SessionService,  
     private usuariosveiculos: UsuariosVeiculosService,  
+    private garagem: GaragemService,
     private router: Router) { 
 
     }
@@ -90,19 +93,23 @@ export class GaragemComponent implements OnInit {
     }else{
       this.data$ = '';
     }
-    
-   
   }
 
 
   voltar(){
     this.show = 0;
     this.data$ = '';
-    this.user_id = 0;
   }
 
   registrar(){
-   
+      var temp = {'user_veiculo_id': this.data$.id, 'posto_id': this.selecionado.id, 'orgao_id': this.selecionado.orgao.id};
+      this.garagem.registro(temp).subscribe(data => {
+        if(data == 1){
+          this.showToast('Entrada autorizada!','Acesso registrado com sucesso.',1);
+          this.data$ = '';
+        }
+        
+      });
   }
 
 }
