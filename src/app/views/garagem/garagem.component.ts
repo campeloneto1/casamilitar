@@ -105,7 +105,7 @@ export class GaragemComponent implements OnInit {
       var temp = {'user_veiculo_id': this.data$.id, 'posto_id': this.selecionado.id, 'orgao_id': this.selecionado.orgao.id};
       this.garagem.registro(temp).subscribe(data => {
         if(data == 1){
-          this.showToast('Entrada autorizada!','Acesso registrado com sucesso.',1);
+          this.showToast('Entrada autorizada!','Veículo registrado com sucesso.',1);
           this.data$ = '';
         }
         

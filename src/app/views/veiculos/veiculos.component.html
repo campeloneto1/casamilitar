@@ -75,8 +75,8 @@
                       <th>TIPO VEÍCULO</th> 
                       <th>COR</th> 
                       <th>PROPRIETÁRIO</th>    
-                      <th>PESSOAS</th>    
-                      <th>MANIFESTAÇÕES</th>                     
+                      <th>OPÇÕES</th>    
+                                         
                       <th>EDITAR</th>
                     </tr>
                   </thead>
@@ -96,21 +96,10 @@
                         <td>{{ data.cor.nome }}</td>  
                         <td><a [routerLink]="['/pessoa', data.pessoa_id]"><span *ngIf="data.proprietario">{{ data.proprietario.nome }} ({{ data.proprietario.cpf }})</span></a></td>  
                         <td>
-                          <a data-toggle="modal" data-target="#modalpessoas" (click)="getPessoas(data)"  class="btn btn-block btn-primary btn-xs btn-flat">Pessoas</a>    
-                         <!--<button type="button" (click)="getPessoas(data)"  data-toggle="modal" data-target="#modalpessoas" class="btn btn-sm btn-outline-info  btn-flat"> Pessoas <span class="badge bg-danger">{{data.pessoas.length}}</span></button>     
-                          <a class="btn btn-app bg-info" (click)="getPessoas(data)" data-toggle="modal" data-target="#modalpessoas">
-                              <span class="badge bg-danger">{{data.pessoas.length}}</span>
-                              <i class="fas fa-users"></i> Pessoas
-                            </a>-->     
-                        </td>
-                        <td>
-                          <a data-toggle="modal" data-target="#modalmanifestacoes" (click)="getManifestacoes(data)"  class="btn btn-block btn-primary btn-xs btn-flat">Manifestações</a>    
-                          <!--<button type="button" (click)="getManifestacoes(data)"  data-toggle="modal" data-target="#modalmanifestacoes" class="btn btn-sm btn-outline-info  btn-flat"> Manifestações <span class="badge bg-danger">{{data.manifestacoes.length}}</span></button>          
-                          <a class="btn btn-app bg-info" (click)="getManifestacoes(data)" data-toggle="modal" data-target="#modalmanifestacoes">
-                              <span class="badge bg-danger">{{data.manifestacoes.length}}</span>
-                              <i class="fas fa-exclamation-triangle"></i> Manifestações
-                            </a>-->
-                        </td>           
+                          <i class="fas fa-user point text-primary"  (click)="getPessoas(data)" data-toggle="modal" data-target="#modalpessoas"></i>
+                          <i class="fas fa-users point text-primary" style="margin-left: 5px;" (click)="getManifestacoes(data)" data-toggle="modal" data-target="#modalmanifestacoes"></i>                      
+                        </td>  
+                              
                         <td>  
                             <span class="editdata">
                                 <i (click)="editar(data)" data-toggle="modal" data-target="#modalcad" class="right fas fa-edit text-primary point"></i>

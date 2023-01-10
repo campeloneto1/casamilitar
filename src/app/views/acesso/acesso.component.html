@@ -162,7 +162,9 @@
                   </div>
                 </div>
                 <div class="card-footer">
+                  <textarea class="form-control form-control-border" [(ngModel)]="observacao" style="width: 100%; margin-bottom: 10px;" placeholder="Observações..."></textarea>
                   <button class="btn btn-primary btn-clock btn-flat col-12" *ngIf="registrado == 0 && data$.acesso == 1 && permissao == 1"  (click)="registrar()">Registrar acesso</button>
+                  
                   <div class="alert alert-danger alert-dismissible" *ngIf="data$.acesso == 0">                    
                     <h5><i class="icon fas fa-ban"></i> Acesso bloqueado!</h5>
                     O acesso do(a) Sr(a). {{data$.nome}} está temporariamente bloqueado.

@@ -70,8 +70,8 @@
                       <th>ID</th>
                       <th>TIPO</th>
                       <th>NOME</th>
-                      <th>PESSOAS</th>
-                      <th>VEÍCULOS</th>
+                      <th>OPÇÕES</th>
+                      
                       <th>EDITAR</th>
                     </tr>
                   </thead>
@@ -89,21 +89,10 @@
                       </td>  
                       <td><a [routerLink]="['/sindicato', data.id]">{{ data.nome }}</a></td>  
                       <td>
-                        <a data-toggle="modal" data-target="#modalpessoas" (click)="getPessoas(data)"  class="btn btn-block btn-primary btn-xs btn-flat">Pessoas</a>    
-                        <!--<button type="button" (click)="getPessoas(data)"  data-toggle="modal" data-target="#modalpessoas" class="btn btn-sm btn-outline-info  btn-flat"> Pessoas <span class="badge bg-danger">{{data.pessoas.length}}</span></button>          
-                        <a class="btn btn-app bg-info" (click)="getPessoas(data)" data-toggle="modal" data-target="#modalpessoas">
-                          <span class="badge bg-danger">{{data.pessoas.length}}</span>
-                          <i class="fas fa-users"></i> Pessoas
-                        </a>-->
-                      </td>    
-                      <td>
-                        <a data-toggle="modal" data-target="#modalveiculos" (click)="getVeiculos(data)"  class="btn btn-block btn-primary btn-xs btn-flat">Veículos</a>    
-                        <!--<button type="button" (click)="getVeiculos(data)"  data-toggle="modal" data-target="#modalveiculos" class="btn btn-sm btn-outline-info  btn-flat"> Veículos <span class="badge bg-danger">{{data.veiculos.length}}</span></button>          
-                        <a class="btn btn-app bg-info" (click)="getVeiculos(data)" data-toggle="modal" data-target="#modalveiculos">
-                          <span class="badge bg-danger">{{data.veiculos.length}}</span>
-                          <i class="fas fa-car"></i> Veículos
-                        </a>-->
-                      </td>    
+                        <i class="fas fa-users point text-primary"  (click)="getPessoas(data)" data-toggle="modal" data-target="#modalpessoas"></i>
+                        <i class="fas fa-car point text-primary" style="margin-left: 5px;" (click)="getVeiculos(data)" data-toggle="modal" data-target="#modalveiculos"></i>                      
+                      </td>
+                      
                         <td>  
                             <span class="editdata">
                             <i class="right fas fa-edit text-primary point" (click)="editar(data)" data-toggle="modal" data-target="#modalcad"></i>

@@ -71,10 +71,11 @@
                       <th>NOME</th>
                       <th>ALCUNHA</th>
                       <th>CPF</th>                     
-                      <th>REDES SOCIAIS</th> 
+                      <!--<th>REDES SOCIAIS</th> 
                       <th>VEÍCULOS</th>
                       <th>EVENTOS/MANIFESTAÇÕES</th> 
-                      <th>ASSOCIAÇÕES/SINDICATOS</th> 
+                      <th>ASSOCIAÇÕES/SINDICATOS</th> -->
+                      <th>OPÇÕES</th>
                       <th>FOTO</th>
                       <th>EDITAR</th>
                     </tr>
@@ -90,37 +91,28 @@
                       <td><a [routerLink]="['/pessoa', data.id]">{{ data.nome }}</a></td>
                       <td>{{ data.alcunha }}</td>
                       <td>{{ data.cpf }}</td>
+                      <!--
                       <td>
                         <a data-toggle="modal" data-target="#modalredes" (click)="getRedes(data)"  class="btn btn-block btn-primary btn-xs btn-flat">Redes Sociais</a>
-                        <!--<button type="button" (click)="getRedes(data)"  data-toggle="modal" data-target="#modalredes" class="btn btn-sm btn-outline-info  btn-flat"> Redes Sociais <span class="badge bg-danger">{{data.redes_sociais.length}}</span></button>
-                        <a class="btn btn-app bg-info" (click)="getRedes(data)" data-toggle="modal" data-target="#modalredes">
-                            <span class="badge bg-danger">{{data.redes_sociais.length}}</span>
-                            <i class="fas fa-car fa-1" aria-hidden="true"></i> Redes Sociais
-                          </a>-->
+                        
                       </td>
                       <td>         
                         <a data-toggle="modal" data-target="#modalveiculos" (click)="getVeiculos(data)"  class="btn btn-block btn-primary btn-xs btn-flat">Veículos</a>    
-                        <!--<button type="button" (click)="getVeiculos(data)"  data-toggle="modal" data-target="#modalveiculos" class="btn btn-sm btn-outline-info  btn-flat"> Veículos <span class="badge bg-danger">{{data.veiculos.length}}</span></button>         
-                        <a class="btn btn-app bg-info" (click)="getVeiculos(data)" data-toggle="modal" data-target="#modalveiculos">
-                            <span class="badge bg-danger">{{data.veiculos.length}}</span>
-                            <i class="fas fa-car"></i> Veículos
-                          </a> -->
+                       
                       </td>
                       <td>
                         <a data-toggle="modal" data-target="#modalmanifestacoes" (click)="getManifestacoes(data)"  class="btn btn-block btn-primary btn-xs btn-flat">Manifestações</a>    
-                        <!--<button type="button" (click)="getManifestacoes(data)"  data-toggle="modal" data-target="#modalmanifestacoes" class="btn btn-sm btn-outline-info  btn-flat"> Eventos/Manifestações <span class="badge bg-danger">{{data.manifestacoes.length}}</span></button>          
-                        <a class="btn btn-app btn-sm bg-info" (click)="getManifestacoes(data)" data-toggle="modal" data-target="#modalmanifestacoes">
-                            <span class="badge bg-danger">{{data.manifestacoes.length}}</span>
-                            <i class="fas fa-users"></i> Manifestações
-                          </a>-->
+                       
                       </td>
                       <td>
                         <a data-toggle="modal" data-target="#modalsindicatos" (click)="getSindicatos(data)"  class="btn btn-block btn-primary btn-xs btn-flat">Sindicatos</a>    
-                        <!--<button type="button" (click)="getSindicatos(data)"  data-toggle="modal" data-target="#modalsindicatos" class="btn btn-sm btn-outline-info btn-flat"> Associações/Sindicatos <span class="badge bg-danger">{{data.sindicatos.length}}</span></button>          
-                        <a class="btn btn-app bg-info" (click)="getSindicatos(data)" data-toggle="modal" data-target="#modalsindicatos">
-                            <span class="badge bg-danger">{{data.sindicatos.length}}</span>
-                            <i class="fas fa-users"></i> Sindicatos
-                          </a>-->
+                       
+                      </td> -->
+                      <td>
+                        <i class="fas fa-id-card point text-primary"  (click)="getRedes(data)" data-toggle="modal" data-target="#modalredes"></i>
+                        <i class="fas fa-car point text-primary" style="margin-left: 5px;" (click)="getVeiculos(data)" data-toggle="modal" data-target="#modalveiculos"></i>
+                        <i class="fas fa-users point text-primary" style="margin-left: 5px;" (click)="getManifestacoes(data)" data-toggle="modal" data-target="#modalmanifestacoes"></i>
+                        <i class="fas fa-building point text-primary" style="margin-left: 5px;" (click)="getSindicatos(data)" data-toggle="modal" data-target="#modalsindicatos"></i>
                       </td>
                       <td >
                         <i class="fas fa-portrait point"  [ngClass]="data.foto ? 'text-success' : 'text-danger'" (click)="foto(data)" data-toggle="modal" data-target="#modalfoto"></i>

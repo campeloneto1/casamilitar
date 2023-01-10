@@ -30,6 +30,7 @@ export class AcessoComponent implements OnInit {
   registrado = 0;
   permissao = 0;
   foto = '';
+  observacao = '';
   path = environment.img;
   
   constructor(private postos: PostosService,
@@ -126,7 +127,7 @@ export class AcessoComponent implements OnInit {
   }
 
   registrar(){
-    var temp = {'user_id': this.user_id, 'posto_id': this.selecionado.id, 'orgao_id': this.selecionado.orgao.id};
+    var temp = {'user_id': this.user_id, 'posto_id': this.selecionado.id, 'orgao_id': this.selecionado.orgao.id, 'observacao': this.observacao};
     this.acessos.registro(temp).subscribe(data => {
       if(data == 1){
         this.showToast('Entrada autorizada!','Acesso registrado com sucesso.',1);

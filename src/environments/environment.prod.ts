@@ -6,3 +6,6 @@ export const environment = {
 };
 //https://hapi.casacivil.ce.gov.br/controle-acesso
 //http://localhost:8080/apicasamilitar
+//https://hsistemas.casacivil.ce.gov.br/controle-acesso/apicasamilitar/public/api/auth/
+//https://hsistemas.casacivil.ce.gov.br/controle-acesso/apicasamilitar/public/imagens/',
+//arq: 'https://hsistemas.casacivil.ce.gov.br/controle-acesso/apicasamilitar/public/arquivos/'
